@@ -767,6 +767,27 @@ const PromoListingSlide = ({ go }) => {
   );
 };
 
+// Custom URL text swap — clip-path wipe + blur (codepen.io/neutrinoweb/pen/qERqyge)
+const CyclingUrl = ({ mls = "987654" }) => {
+  const urls = [`${mls}.slw.homes`, `4320mercerisland.com`];
+  const [flip, setFlip] = React.useState(false);
+
+  React.useEffect(() => {
+    const t = setTimeout(() => setFlip(f => !f), 8000);
+    return () => clearTimeout(t);
+  }, [flip]);
+
+  const oldText = flip ? urls[1] : urls[0];
+  const newText = flip ? urls[0] : urls[1];
+
+  return (
+    <span key={String(flip)} className="url-swap">
+      <span className="url url-old">{oldText}</span>
+      <span className="url url-new">{newText}</span>
+    </span>
+  );
+};
+
 // Listing detail
 const ListingDetail = ({ id, go, onShare, defaultTab = "basics", backRoute = "listings", backLabel = "Back to listings", phase1Mode = false, activatedIds = new Set() }) => {
   const l = RC_DATA.listings.find(x => x.id === id) || RC_DATA.listings[0];
@@ -940,7 +961,7 @@ const ListingDetail = ({ id, go, onShare, defaultTab = "basics", backRoute = "li
                 Get a custom URL for this listing
               </h2>
               <p style={{ fontSize: 12.5, color: "#475569", margin: "0 0 16px", lineHeight: 1.55 }}>
-                Replace the default MLS-based link with a memorable branded domain — like <strong style={{ color: "#1D4ED8" }}>4320mercerisland.com</strong> — that you own and control.
+                Replace the default MLS-based link with a memorable branded domain that you own and control - like <CyclingUrl mls={l.mls} />
               </p>
               <button className="btn btn-sm" onClick={() => setGetDomainOpen(true)} style={{ background: "#1D4ED8", color: "#fff", fontWeight: 600, borderRadius: 999, padding: "6px 16px" }}>
                 <Icon name="sparkle" size={13} /> Get Custom URL
@@ -992,7 +1013,7 @@ const ListingDetail = ({ id, go, onShare, defaultTab = "basics", backRoute = "li
             </div>
             <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2 }}>
               <a href="#" style={{ fontSize: 12, color: "var(--blue-500)", fontWeight: 500 }}>{l.mls}.rsir.homes</a>
-              <a href="#" className="ld-get-domain" style={{ padding: 0 }} onClick={e => { e.preventDefault(); setGetDomainOpen(true); }}>Get Domain →</a>
+              <a href="#" className="ld-get-domain" style={{ padding: 0, fontSize: 13, color: "#3B82F6", display: "flex", alignItems: "center", gap: 4 }} onMouseEnter={e => e.currentTarget.style.color="#0e1e3d"} onMouseLeave={e => e.currentTarget.style.color="#3B82F6"} onClick={e => { e.preventDefault(); setGetDomainOpen(true); }}><Icon name="external-link" size={10} /> Purchase a custom URL</a>
             </div>
             <div className="ld-web-actions">
               <button className="btn btn-primary btn-sm" style={{ background: "#2BB882" }}><Icon name="eye" size={12} /> View website</button>
@@ -1476,7 +1497,7 @@ const ListingDetail = ({ id, go, onShare, defaultTab = "basics", backRoute = "li
               Get a custom URL for this listing
             </h2>
             <p style={{ fontSize: 12.5, color: "#475569", margin: "0 0 16px", lineHeight: 1.55 }}>
-              Replace the default MLS-based link with a memorable branded domain — like <strong style={{ color: "#1D4ED8" }}>4320mercerisland.com</strong> — that you own and control.
+              Replace the default MLS-based link with a memorable branded domain that you own and control - like <CyclingUrl mls={l.mls} />
             </p>
             <button className="btn btn-sm" style={{ background: "#1D4ED8", color: "#fff", fontWeight: 600, borderRadius: 999, padding: "6px 16px" }}>
               <Icon name="sparkle" size={13} /> Get Custom URL

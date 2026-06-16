@@ -61,6 +61,7 @@ const Icon = ({ name, size = 18, stroke = 1.7 }) => {
     zap: "M13 2L3 14h9l-1 8 10-12h-9z",
     stats: "M3 20h18M8 20V10M12 20V4M16 20v-8",
     portfolio: "M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zM12 8a4 4 0 1 1 0 8 4 4 0 0 1 0-8z",
+    "external-link": "M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3",
   };
   const d = paths[name];
   if (!d) return null;

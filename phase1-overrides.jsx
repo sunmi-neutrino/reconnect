@@ -960,9 +960,9 @@ const Dashboard = ({ go }) => {
 
           {myListings.slice(0, 3).map((l, i) => (
             <div key={l.id} className="dash-free-listing" style={{ borderBottom: i < Math.min(myListings.length, 3) - 1 ? "1px solid var(--border-2)" : "none" }}>
-              <div className="dash-free-listing-thumb" style={{ backgroundImage: `url(${l.img})` }}></div>
+              <div className="dash-free-listing-thumb" style={{ backgroundImage: `url(${l.img})`, cursor: "pointer" }} onClick={() => go("amp-listing/" + l.id)}></div>
               <div className="dash-free-listing-info">
-                <div className="dash-free-address">{l.address}</div>
+                <div className="dash-free-address" style={{ cursor: "pointer" }} onClick={() => go("amp-listing/" + l.id)}>{l.address}</div>
                 <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4, flexWrap: "wrap" }}>
                   <a href="#" className="link" style={{ fontSize: 13 }}>{l.mls}.rsir.homes</a>
                   <span className="dash-site-live-badge" style={{ background: "none", border: "none", padding: 0, gap: 4 }}>
@@ -971,7 +971,7 @@ const Dashboard = ({ go }) => {
                   </span>
                 </div>
                 <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
-                  <a href="#" style={{ fontSize: 12, fontWeight: 600, color: "#10B981", textDecoration: "none" }} onClick={e => { e.preventDefault(); setDomainModalListing(l); }}>Get Domain →</a>
+                  <a href="#" style={{ fontSize: 12, fontWeight: 600, color: "#3B82F6", textDecoration: "none", display: "flex", alignItems: "center", gap: 4 }} onMouseEnter={e => e.currentTarget.style.color="#0e1e3d"} onMouseLeave={e => e.currentTarget.style.color="#3B82F6"} onClick={e => { e.preventDefault(); setDomainModalListing(l); }}><Icon name="external-link" size={12} /> Purchase a custom URL</a>
                 </div>
               </div>
               <button className="btn btn-secondary btn-sm" style={{ flexShrink: 0 }} onClick={() => go("amp-listing/" + l.id)}>View Details</button>

@@ -429,3 +429,63 @@
   .phase1-listing-detail .listing-detail-right { display: none; }
   .phase1-listing-detail .listing-promo-mobile { display: block; }
 }
+
+/* ── Custom URL promo — text swap animation (matches codepen.io/neutrinoweb/pen/qERqyge) ── */
+.url-swap {
+  display: inline-grid;
+  position: relative;
+}
+
+.url-swap .url {
+  grid-area: 1/1;
+  white-space: nowrap;
+  font-weight: 700;
+  font-family: 'Poppins', sans-serif;
+  font-size: 13px;
+}
+
+.url-swap .url-old {
+  color: #1D4ED8;
+  animation: urlSwapOld 8s forwards;
+}
+
+.url-swap .url-new {
+  color: #059669;
+  animation: urlSwapNew 8s forwards;
+}
+
+@keyframes urlSwapOld {
+  0%, 40% {
+    clip-path: inset(0 0 0 0);
+    filter: blur(0);
+    opacity: 1;
+  }
+  50% {
+    clip-path: inset(0 0 0 100%);
+    filter: blur(2px);
+    opacity: 0;
+  }
+  100% {
+    clip-path: inset(0 0 0 100%);
+    filter: blur(0);
+    opacity: 0;
+  }
+}
+
+@keyframes urlSwapNew {
+  0%, 40% {
+    clip-path: inset(0 100% 0 0);
+    filter: blur(2px);
+    opacity: 0;
+  }
+  50% {
+    clip-path: inset(0 0 0 0);
+    filter: blur(0);
+    opacity: 1;
+  }
+  100% {
+    clip-path: inset(0 0 0 0);
+    filter: blur(0);
+    opacity: 1;
+  }
+}
