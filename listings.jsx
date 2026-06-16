@@ -768,22 +768,19 @@ const PromoListingSlide = ({ go }) => {
 };
 
 // Custom URL text swap — clip-path wipe + blur (codepen.io/neutrinoweb/pen/qERqyge)
+// Always animates from slw.homes → custom domain, then resets and repeats
 const CyclingUrl = ({ mls = "987654" }) => {
-  const urls = [`${mls}.slw.homes`, `4320mercerisland.com`];
-  const [flip, setFlip] = React.useState(false);
+  const [cycle, setCycle] = React.useState(0);
 
   React.useEffect(() => {
-    const t = setTimeout(() => setFlip(f => !f), 8000);
+    const t = setTimeout(() => setCycle(c => c + 1), 8000);
     return () => clearTimeout(t);
-  }, [flip]);
-
-  const oldText = flip ? urls[1] : urls[0];
-  const newText = flip ? urls[0] : urls[1];
+  }, [cycle]);
 
   return (
-    <span key={String(flip)} className="url-swap">
-      <span className="url url-old">{oldText}</span>
-      <span className="url url-new">{newText}</span>
+    <span key={cycle} className="url-swap">
+      <span className="url url-old">{mls}.slw.homes</span>
+      <span className="url url-new">4320mercerisland.com</span>
     </span>
   );
 };
