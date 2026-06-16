@@ -879,7 +879,7 @@ const ListingDetail = ({ id, go, onShare, defaultTab = "basics", backRoute = "li
             </div>
             <div className="sdhdr-actions">
               <button className="btn btn-primary btn-sm" style={{ background: "#2BB882" }}><Icon name="eye" size={13} /> View website</button>
-              <button className="btn btn-secondary btn-sm" onClick={() => onShare("listing")}><Icon name="share" size={13} /> Share</button>
+              <button className="btn btn-secondary btn-sm"><Icon name="share" size={13} /> Share</button>
               {!phase1Mode && <button className="btn btn-secondary btn-sm"><Icon name="download" size={13} /> Download All</button>}
               {!phase1Mode && <button className="btn btn-ghost btn-sm"><Icon name="edit" size={13} /> Edit</button>}
             </div>
@@ -996,7 +996,7 @@ const ListingDetail = ({ id, go, onShare, defaultTab = "basics", backRoute = "li
             </div>
             <div className="ld-web-actions">
               <button className="btn btn-primary btn-sm" style={{ background: "#2BB882" }}><Icon name="eye" size={12} /> View website</button>
-              <button className="btn btn-secondary btn-sm" onClick={() => onShare("listing")}><Icon name="share" size={12} /> Share</button>
+              <button className="btn btn-secondary btn-sm"><Icon name="share" size={12} /> Share</button>
             </div>
           </div>
 
