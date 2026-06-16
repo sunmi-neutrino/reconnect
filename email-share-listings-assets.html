@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Email Preview — Share Listings + Assets</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: #DDE1E9; font-family: "Poppins", Arial, sans-serif; padding: 0 0 60px; }
+
+.preview-nav {
+  background: #0B1F3A; padding: 12px 24px;
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  position: sticky; top: 0; z-index: 100;
+}
+.preview-nav-label { font-size: 11px; font-weight: 700; color: #6b86ad; text-transform: uppercase; letter-spacing: 0.06em; margin-right: 4px; }
+.preview-nav a { font-size: 12px; font-weight: 500; color: #93c5fd; text-decoration: none; padding: 4px 12px; border-radius: 999px; border: 1px solid rgba(147,197,253,0.2); transition: all .15s; }
+.preview-nav a:hover { background: rgba(147,197,253,0.12); }
+.preview-nav a.active { background: #2563EB; color: #fff; border-color: #2563EB; }
+.preview-nav .sep { color: #6b86ad; font-size: 13px; margin: 0 4px; }
+.preview-nav .flow-link { color: #10B981; border-color: rgba(16,185,129,0.3); }
+.preview-nav .flow-link:hover { background: rgba(16,185,129,0.12); }
+
+.email-stage { max-width: 660px; margin: 32px auto 0; padding: 0 16px; }
+.email-window { background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 12px 48px rgba(0,0,0,0.2); }
+.email-chrome { background: #F8FAFC; border-bottom: 1px solid #E5E8EE; padding: 14px 20px; }
+.email-chrome-row { font-size: 13px; color: #1e293b; line-height: 1.8; }
+.email-chrome-row strong { font-weight: 600; color: #0F172A; }
+.email-body { background: #F6F7F9; }
+.email-header { background: #fff; border-bottom: 1px solid #E5E8EE; padding: 22px 48px; text-align: center; }
+.email-header img { width: 172px; height: auto; }
+.email-main { background: #fff; }
+.email-section { padding: 32px 48px; }
+.email-footer { background: #0B1F3A; padding: 24px 48px; text-align: center; }
+
+/* Sender strip */
+.sender-strip {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 20px; background: #F8FAFC;
+  border: 1px solid #E5E8EE; border-radius: 10px; margin-bottom: 22px;
+}
+.sender-ava {
+  width: 44px; height: 44px; border-radius: 50%;
+  background-size: cover; background-position: center;
+  border: 2px solid #fff; box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+  flex-shrink: 0;
+}
+
+/* Quote block */
+.quote-block { background: #EFF6FF; border-left: 3px solid #2563EB; border-radius: 0 10px 10px 0; padding: 14px 18px; margin-bottom: 24px; }
+.quote-label { font-size: 11.5px; font-weight: 700; color: #2563EB; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; }
+.quote-text { font-size: 13.5px; color: #1e293b; line-height: 1.7; font-style: italic; }
+
+/* Pills */
+.pill { display: inline-flex; align-items: center; font-size: 10.5px; font-weight: 600; padding: 3px 9px; border-radius: 999px; }
+.pill-green { background: #ECFDF5; color: #047857; }
+.pill-blue { background: #EFF6FF; color: #1d4ed8; }
+.pill-gray { background: #F1F5F9; color: #64748B; }
+
+/* Listing rows */
+.listing-row {
+  display: flex; flex-direction: column;
+  padding: 14px 16px;
+  background: #fff;
+  border: 1px solid #E5E8EE;
+  border-radius: 12px;
+  margin-bottom: 10px;
+}
+.listing-row-top { display: flex; align-items: flex-start; gap: 14px; }
+.listing-row-thumb {
+  width: 82px; height: 62px;
+  border-radius: 8px;
+  background-size: cover; background-position: center;
+  flex-shrink: 0;
+}
+.listing-row-info { flex: 1; min-width: 0; }
+.listing-row-info .listing-address { font-size: 13.5px; font-weight: 700; color: #0F172A; margin-bottom: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.listing-row-info .listing-city { font-size: 11px; color: #64748B; margin-bottom: 6px; }
+.listing-row-info .listing-price-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.listing-row-info .listing-price { font-size: 14px; font-weight: 700; color: #0F172A; letter-spacing: -0.02em; }
+.listing-row-info .listing-specs { font-size: 11px; color: #94a3b8; }
+
+/* Asset type badges */
+.listing-row-right { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; flex-shrink: 0; padding-top: 2px; }
+.asset-icons { display: flex; flex-direction: row; gap: 16px; flex-wrap: nowrap; padding-top: 10px; margin-top: 10px; border-top: 1px solid #F0F2F5; }
+.asset-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 11px; font-weight: 500;
+  color: #10B981;
+  white-space: nowrap;
+}
+.asset-badge svg { flex-shrink: 0; }
+
+.listing-cta {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: #F8FAFC; color: #2563EB;
+  font-weight: 600; font-size: 11.5px;
+  padding: 7px 14px; border-radius: 999px;
+  text-decoration: none;
+  border: 1px solid #DBEAFE;
+  white-space: nowrap;
+}
+
+/* Inline promo banner (between listings) */
+.promo-listing-row {
+  display: flex; align-items: center; gap: 16px;
+  padding: 14px 18px;
+  background: #F5F3FF;
+  border: 1px solid #DDD6FE;
+  border-radius: 12px;
+  margin-bottom: 10px;
+}
+.promo-listing-row-icon {
+  width: 34px; height: 34px; border-radius: 9px;
+  background: #EDE9FE; display: flex;
+  align-items: center; justify-content: center; flex-shrink: 0;
+  color: #7c3aed;
+}
+.promo-listing-row-text { flex: 1; }
+.promo-listing-row-text .promo-eyebrow {
+  font-size: 10px; font-weight: 700; color: #7c3aed;
+  text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 3px;
+}
+.promo-listing-row-text .promo-headline {
+  font-size: 13px; font-weight: 700; color: #3b0764; line-height: 1.3;
+}
+.promo-listing-row-text .promo-sub {
+  font-size: 11px; color: #7c3aed; opacity: 0.75; margin-top: 2px;
+}
+.promo-cta-inline {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: #7c3aed; color: #fff;
+  font-size: 11.5px; font-weight: 700;
+  padding: 8px 16px; border-radius: 999px;
+  text-decoration: none; white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* View All CTA */
+.cta-btn {
+  display: inline-block; background: #10B981; color: #fff;
+  font-weight: 700; font-size: 15px; padding: 16px 48px;
+  border-radius: 999px; text-decoration: none; letter-spacing: -0.01em;
+}
+.cta-btn-outline {
+  display: inline-block; background: transparent; color: #2563EB;
+  font-weight: 600; font-size: 13.5px; padding: 10px 28px;
+  border-radius: 999px; text-decoration: none;
+  border: 1.5px solid #DBEAFE;
+  margin-top: 12px;
+}
+
+/* ── Animated promo banner ── */
+.promo-banner-section {
+  background: linear-gradient(160deg, #0B1F3A 0%, #0f2d52 50%, #0B1F3A 100%);
+  padding: 40px 48px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.promo-banner-section::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 50% 110%, rgba(16,185,129,0.18) 0%, transparent 65%);
+  pointer-events: none;
+}
+.promo-banner-eyebrow {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 11px; font-weight: 700; color: #10B981;
+  text-transform: uppercase; letter-spacing: 0.08em;
+  background: rgba(16,185,129,0.12); border: 1px solid rgba(16,185,129,0.25);
+  padding: 5px 14px; border-radius: 999px; margin-bottom: 18px;
+}
+.promo-banner-static {
+  font-size: 26px; font-weight: 700; color: #fff;
+  letter-spacing: -0.02em; line-height: 1.2; margin-bottom: 4px;
+}
+.promo-anim-wrapper {
+  height: 44px;
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+.anim-phrase {
+  position: absolute;
+  left: 0; right: 0;
+  text-align: center;
+  font-size: 26px; font-weight: 700;
+  color: #10B981; letter-spacing: -0.02em; line-height: 1.2;
+  opacity: 0;
+  animation: phraseSlide 12s infinite;
+}
+.anim-phrase:nth-child(1) { animation-delay: 0s; }
+.anim-phrase:nth-child(2) { animation-delay: 3s; }
+.anim-phrase:nth-child(3) { animation-delay: 6s; }
+.anim-phrase:nth-child(4) { animation-delay: 9s; }
+
+@keyframes phraseSlide {
+  0%    { opacity: 0; transform: translateY(12px); }
+  6%    { opacity: 1; transform: translateY(0); }
+  20%   { opacity: 1; transform: translateY(0); }
+  26%   { opacity: 0; transform: translateY(-12px); }
+  100%  { opacity: 0; transform: translateY(-12px); }
+}
+
+.promo-banner-easy {
+  font-size: 16px; font-weight: 500; color: rgba(255,255,255,0.65);
+  margin-bottom: 24px; margin-top: 4px;
+}
+.promo-banner-cta {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: linear-gradient(135deg, #7c3aed, #6d28d9);
+  color: #fff; font-size: 14.5px; font-weight: 700;
+  padding: 14px 36px; border-radius: 999px;
+  text-decoration: none; letter-spacing: -0.01em;
+  box-shadow: 0 4px 20px rgba(124,58,237,0.45);
+}
+.promo-banner-sub {
+  margin-top: 14px; font-size: 11.5px; color: rgba(255,255,255,0.35);
+}
+</style>
+</head>
+<body>
+
+<nav class="preview-nav">
+  <span class="preview-nav-label">Email Previews:</span>
+  <a href="email-invitation.html">Invitation</a>
+  <a href="email-share-listings.html">Share Listings</a>
+  <a href="email-share-showcase.html">Share Showcase</a>
+  <a href="email-share-assets.html">Share Assets</a>
+  <a href="email-share-listings-assets.html" class="active">Listings + Assets</a>
+  <span class="sep">→</span>
+  <a href="auth-landing.html#listings" class="flow-link">Auth Landing ↗</a>
+  <a href="Reconnect Member.html" class="flow-link">Member View ↗</a>
+</nav>
+
+<div class="email-stage">
+  <div class="email-window">
+
+    <div class="email-chrome">
+      <div class="email-chrome-row"><strong>From:</strong> Mike Anderson via REConnect &lt;notify@reconnect.app&gt;</div>
+      <div class="email-chrome-row"><strong>To:</strong> Sarah Chen &lt;sarah.chen@coldwellbanker.com&gt;</div>
+      <div class="email-chrome-row"><strong>Subject:</strong> Mike Anderson shared 3 listings &amp; marketing assets with you on REConnect</div>
+    </div>
+
+    <div class="email-body">
+
+      <div class="email-header">
+        <img src="uploads/Reconnect-Logo-V1.svg" alt="REConnect" />
+      </div>
+
+      <div class="email-main">
+
+        <!-- ── Intro section ── -->
+        <div class="email-section">
+
+          <div style="text-align:center; margin-bottom:26px;">
+            <div style="display:inline-flex; align-items:center; gap:7px; background:#EFF6FF; color:#1d4ed8; font-size:12px; font-weight:700; padding:5px 14px; border-radius:999px; letter-spacing:0.04em; text-transform:uppercase; margin-bottom:14px;">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8v10a2 2 0 0 1-2 2h-4v-7H9v7H5a2 2 0 0 1-2-2V11z"/></svg>
+              Listings &amp; assets shared with you
+            </div>
+            <h1 style="font-size:23px; font-weight:700; color:#0F172A; letter-spacing:-0.02em; line-height:1.3; margin:0 0 10px;">
+              Mike Anderson shared 3 listings<br>and marketing assets with you
+            </h1>
+          </div>
+
+          <!-- Sender -->
+          <div class="sender-strip">
+            <div class="sender-ava" style="background-image:url(https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=120&auto=format)"></div>
+            <div>
+              <div style="font-size:13.5px; font-weight:700; color:#0F172A;">Mike Anderson</div>
+              <div style="font-size:12px; color:#64748B; margin-top:1px;">Realtor · Neutrino &nbsp;·&nbsp; Seattle, WA</div>
+            </div>
+            <div style="margin-left:auto; text-align:right;">
+              <div style="font-size:11px; font-weight:700; color:#10B981; text-transform:uppercase; letter-spacing:0.05em;">Shared with you</div>
+              <div style="font-size:11.5px; color:#64748B; margin-top:1px;">Just now</div>
+            </div>
+          </div>
+
+          <!-- Personal note -->
+          <div class="quote-block">
+            <div class="quote-label">Note from Mike</div>
+            <div class="quote-text">"Sarah — sharing these listings along with all the marketing materials for our May co-marketing push. Flyers and social assets are ready to go. — Mike"</div>
+          </div>
+
+        </div>
+
+        <!-- ── Listings section ── -->
+        <div class="email-section" style="background:#F8FAFC; padding-top:24px; padding-bottom:24px;">
+          <div style="font-size:12px; font-weight:700; color:#64748B; text-transform:uppercase; letter-spacing:0.06em; margin-bottom:14px;">3 listings shared</div>
+
+          <!-- Listing 1 -->
+          <div class="listing-row">
+            <div class="listing-row-top">
+              <div class="listing-row-thumb" style="background-image:url(https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=300&auto=format)"></div>
+              <div class="listing-row-info">
+                <div style="display:flex; align-items:center; gap:6px; margin-bottom:5px;">
+                  <span class="pill pill-green">Active</span>
+                  <span class="pill pill-gray">Residential</span>
+                </div>
+                <div class="listing-address">7447 W Mercer Way</div>
+                <div class="listing-city">Mercer Island, WA · MLS# 2516113</div>
+                <div class="listing-price-row">
+                  <span class="listing-price">$3,690,000</span>
+                  <span class="listing-specs">5bd · 4.5ba · 4,820 sqft</span>
+                </div>
+              </div>
+              <div class="listing-row-right">
+                <a href="auth-landing.html#assets" class="listing-cta">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>
+                  View / Download Assets
+                </a>
+              </div>
+            </div>
+            <div class="asset-icons">
+              <span class="asset-badge"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>Photos/Videos</span>
+              <span class="asset-badge"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>Property Description</span>
+              <span class="asset-badge"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>Detail</span>
+              <span class="asset-badge"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="9" x2="20" y2="9"/><line x1="4" y1="15" x2="20" y2="15"/><line x1="10" y1="3" x2="8" y2="21"/><line x1="16" y1="3" x2="14" y2="21"/></svg>Hashtags</span>
+              <span class="asset-badge"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>Embed Code</span>
+            </div>
+          </div>
+
+          <!-- Listing 2 -->
+          <div class="listing-row">
+            <div class="listing-row-top">
+              <div class="listing-row-thumb" style="background-image:url(https://images.unsplash.com/photo-1605276374104-dee2a0ed3cd6?w=300&auto=format)"></div>
+              <div class="listing-row-info">
+                <div style="display:flex; align-items:center; gap:6px; margin-bottom:5px;">
+                  <span class="pill pill-green">Active</span>
+                  <span class="pill pill-gray">Residential</span>
+                </div>
+                <div class="listing-address">3208 175th Street SE</div>
+                <div class="listing-city">Bothell, WA 98012 · MLS# 2518679</div>
+                <div class="listing-price-row">
+                  <span class="listing-price">$1,449,950</span>
+                  <span class="listing-specs">4bd · 3ba · 3,120 sqft</span>
+                </div>
+              </div>
+              <div class="listing-row-right">
+                <a href="auth-landing.html#assets" class="listing-cta">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>
+                  View / Download Assets
+                </a>
+              </div>
+            </div>
+            <div class="asset-icons">
+              <span class="asset-badge"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>Photos/Videos</span>
+              <span class="asset-badge"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>Property Description</span>
+              <span class="asset-badge"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>Detail</span>
+              <span class="asset-badge"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="9" x2="20" y2="9"/><line x1="4" y1="15" x2="20" y2="15"/><line x1="10" y1="3" x2="8" y2="21"/><line x1="16" y1="3" x2="14" y2="21"/></svg>Hashtags</span>
+              <span class="asset-badge"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>Embed Code</span>
+            </div>
+          </div>
+
+          <!-- ── Promo banner (in place of a listing slot) ── -->
+          <div class="promo-listing-row">
+            <div class="promo-listing-row-text">
+              <div class="promo-eyebrow">REConnect Pro</div>
+              <div class="promo-headline">Want to share your listings?</div>
+              <div class="promo-sub">Share with anyone, inside or outside your MLS — in seconds.</div>
+            </div>
+            <a href="#" class="promo-cta-inline">
+              Get REConnect Pro
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+
+          <!-- Listing 3 -->
+          <div class="listing-row" style="margin-bottom:0;">
+            <div class="listing-row-top">
+              <div class="listing-row-thumb" style="background-image:url(https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=300&auto=format)"></div>
+              <div class="listing-row-info">
+                <div style="display:flex; align-items:center; gap:6px; margin-bottom:5px;">
+                  <span class="pill pill-green">Active</span>
+                  <span class="pill pill-gray">Residential</span>
+                </div>
+                <div class="listing-address">445 Shore Lane NW</div>
+                <div class="listing-city">Issaquah, WA 98027 · MLS# 2521044</div>
+                <div class="listing-price-row">
+                  <span class="listing-price">$2,195,000</span>
+                  <span class="listing-specs">4bd · 3.5ba · 3,740 sqft</span>
+                </div>
+              </div>
+              <div class="listing-row-right">
+                <a href="auth-landing.html#assets" class="listing-cta">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>
+                  View / Download Assets
+                </a>
+              </div>
+            </div>
+            <div class="asset-icons">
+              <span class="asset-badge"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>Photos/Videos</span>
+              <span class="asset-badge"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>Property Description</span>
+              <span class="asset-badge"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>Detail</span>
+              <span class="asset-badge"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="9" x2="20" y2="9"/><line x1="4" y1="15" x2="20" y2="15"/><line x1="10" y1="3" x2="8" y2="21"/><line x1="16" y1="3" x2="14" y2="21"/></svg>Hashtags</span>
+              <span class="asset-badge"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>Embed Code</span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- ── CTA section ── -->
+        <div class="email-section" style="text-align:center; padding-top:32px; padding-bottom:36px;">
+<a href="auth-landing.html#listings" class="cta-btn">View All Listings on REConnect →</a>
+          <div style="margin-top:12px; font-size:12px; color:#94a3b8;">Sign in or create your free account to view all details &amp; download assets</div>
+
+        </div>
+
+      </div>
+
+      <!-- ── Animated promo banner ── -->
+      <div class="promo-banner-section">
+        <div style="position:relative; z-index:1;">
+          <div class="promo-banner-eyebrow">
+            REConnect Pro
+          </div>
+          <div class="promo-banner-static">Share your listings with</div>
+          <div class="promo-anim-wrapper">
+            <span class="anim-phrase">anyone</span>
+            <span class="anim-phrase">anyone outside your brokerage</span>
+            <span class="anim-phrase">anyone outside your market</span>
+            <span class="anim-phrase">anyone outside your MLS</span>
+          </div>
+          <div class="promo-banner-easy">It's Easy!</div>
+          <a href="#" class="promo-banner-cta">
+            Get REConnect Pro
+          </a>
+          <div class="promo-banner-sub">No MLS restrictions. No barriers. Just connections.</div>
+        </div>
+      </div>
+
+      <!-- ── Footer ── -->
+      <div class="email-footer">
+        <div style="margin-bottom:10px;">
+          <img src="uploads/Reconnect-Logo-V1.svg" alt="REConnect" style="width:130px; filter:brightness(0) invert(1); opacity:0.65;" />
+        </div>
+        <div style="font-size:12px; color:#6b86ad; line-height:1.8;">
+          Mike Anderson shared these listings and assets with you on REConnect.<br>
+          Questions? Reply to this email or contact <a href="#" style="color:#93c5fd;">support@reconnect.app</a>
+        </div>
+        <div style="margin-top:14px; font-size:11.5px; color:#4a6080;">
+          © 2026 REConnect · Neutrino, Inc. · Seattle, WA &nbsp;·&nbsp;
+          <a href="#" style="color:#4a6080;">Unsubscribe</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

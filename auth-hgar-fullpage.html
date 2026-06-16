@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>REConnect — HGAR Member Login</title>
+<script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body {
+  font-family: "Poppins", system-ui, sans-serif;
+  background: #0B1F3A;
+  color: #0F172A;
+  -webkit-font-smoothing: antialiased;
+  font-size: 14px;
+}
+
+/* ── Layout ── */
+.layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 100vh;
+}
+@media (max-width: 860px) {
+  .layout { grid-template-columns: 1fr; grid-template-rows: auto auto; }
+  .context-panel { order: 2; }
+  .auth-panel { order: 1; }
+}
+
+/* ── Left panel ── */
+.context-panel {
+  background: linear-gradient(135deg, #1B2166 0%, #8D5D8E 100%);
+  padding: 52px 56px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+.context-panel::before {
+  content: "";
+  position: absolute;
+  top: -100px; right: -100px;
+  width: 380px; height: 380px;
+  background: radial-gradient(circle, rgba(255,255,255,0.07) 0%, transparent 70%);
+  pointer-events: none;
+}
+.context-panel::after {
+  content: "";
+  position: absolute;
+  bottom: -80px; left: -80px;
+  width: 300px; height: 300px;
+  background: radial-gradient(circle, rgba(99,60,220,0.3) 0%, transparent 70%);
+  pointer-events: none;
+}
+.context-panel > * { position: relative; z-index: 1; }
+
+.cp-logo { margin-bottom: 32px; }
+.cp-logo img { width: 168px; }
+
+/* Welcome message */
+.cp-welcome-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.25);
+  color: #fff; font-size: 11px; font-weight: 700;
+  padding: 5px 14px; border-radius: 999px;
+  letter-spacing: 0.06em; text-transform: uppercase;
+  margin-bottom: 24px; align-self: flex-start;
+}
+
+.cp-headline {
+  font-size: 28px; font-weight: 700; color: #fff;
+  letter-spacing: -0.025em; line-height: 1.25;
+  margin-bottom: 10px;
+}
+.cp-headline span { color: #fff; }
+
+.cp-subline {
+  font-size: 14px; color: rgba(255,255,255,0.7); line-height: 1.75;
+  margin-bottom: 36px; max-width: 380px;
+}
+
+/* What to do once you're in */
+.cp-section-title {
+  font-size: 13px; font-weight: 700; color: #fff;
+  margin-bottom: 16px;
+}
+
+.cp-checklist {
+  display: flex; flex-direction: column; gap: 0;
+  margin-bottom: 32px;
+  background: rgba(0,0,0,0.25); border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 14px; padding: 6px 16px;
+}
+.cp-check-item {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 11px 0;
+}
+.cp-check-icon {
+  width: 20px; height: 20px; border-radius: 50%;
+  background: rgba(16,185,129,0.25); border: 1.5px solid rgba(16,185,129,0.5);
+  color: #6EE7B7; display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; margin-top: 1px;
+}
+.cp-check-text { font-size: 13px; color: rgba(255,255,255,0.85); line-height: 1.5; }
+
+/* Credentials box */
+.cp-creds {
+  background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.22);
+  border-radius: 14px; padding: 20px 22px; margin-bottom: 0;
+}
+.cp-creds-title {
+  font-size: 13px; font-weight: 700; color: #fff;
+  text-align: center; margin-bottom: 16px;
+}
+.cp-creds-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+.cp-creds-row:last-child { border-bottom: none; padding-bottom: 0; }
+.cp-creds-label { font-size: 12px; color: rgba(255,255,255,0.6); }
+.cp-creds-value {
+  font-size: 12.5px; font-weight: 700; color: #fff;
+  background: rgba(255,255,255,0.15); padding: 3px 10px;
+  border-radius: 6px; font-family: monospace;
+}
+.cp-creds-note {
+  font-size: 11.5px; color: rgba(255,255,255,0.45); text-align: center;
+  margin-top: 12px; font-style: italic;
+}
+
+/* Testimonial */
+.cp-testimonial {
+  margin-top: 32px; padding-top: 28px;
+  border-top: 1px solid rgba(255,255,255,0.15);
+  display: flex; align-items: center; gap: 12px;
+}
+.cp-test-avas { display: flex; }
+.cp-test-ava {
+  width: 28px; height: 28px; border-radius: 50%;
+  background-size: cover; background-position: center;
+  border: 2px solid rgba(255,255,255,0.3); margin-left: -8px;
+}
+.cp-test-ava:first-child { margin-left: 0; }
+.cp-test-text { font-size: 12.5px; color: rgba(255,255,255,0.65); }
+.cp-test-text strong { color: #fff; font-weight: 600; }
+
+/* ── Auth panel (right) ── */
+.auth-panel {
+  background: #fff;
+  display: flex; align-items: center; justify-content: center;
+  padding: 48px 52px;
+}
+.auth-inner { width: 100%; max-width: 380px; }
+
+.auth-logo { display: block; margin-bottom: 28px; }
+
+/* Step containers */
+.step { display: none; }
+.step.active { display: block; }
+
+/* Login step */
+.auth-headline { font-size: 22px; font-weight: 700; color: #0F172A; letter-spacing: -0.02em; margin-bottom: 6px; line-height: 1.3; }
+.auth-sub { font-size: 13.5px; color: #64748B; line-height: 1.6; margin-bottom: 28px; }
+
+.hgar-badge {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: #EFF6FF; border: 1px solid #BFDBFE;
+  color: #1D4ED8; font-size: 11px; font-weight: 700;
+  padding: 5px 14px; border-radius: 999px;
+  letter-spacing: 0.05em; text-transform: uppercase;
+  margin-bottom: 20px;
+}
+
+.field { margin-bottom: 14px; }
+.field label { display: block; font-size: 12.5px; font-weight: 600; color: #1e293b; margin-bottom: 5px; }
+.field input {
+  width: 100%; padding: 10px 14px; border: 1.5px solid #E5E8EE; border-radius: 8px;
+  font-family: inherit; font-size: 13.5px; color: #0F172A;
+  transition: border-color .15s; outline: none; background: #fff;
+}
+.field input:focus { border-color: #2563EB; box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
+.field input::placeholder { color: #94a3b8; }
+
+.forgot-link { font-size: 11.5px; font-weight: 500; color: #2563EB; text-decoration: none; }
+.forgot-link:hover { text-decoration: underline; }
+
+.submit-btn {
+  width: 100%; padding: 13px; border: none; border-radius: 10px;
+  background: #1D4ED8; color: #fff; font-family: inherit;
+  font-size: 14.5px; font-weight: 700; cursor: pointer;
+  transition: background .15s; margin-top: 8px; letter-spacing: -0.01em;
+}
+.submit-btn:hover { background: #1e40af; }
+.submit-btn:disabled { opacity: 0.7; cursor: not-allowed; }
+
+.auth-divider {
+  display: flex; align-items: center; gap: 12px;
+  margin: 20px 0; color: #94a3b8; font-size: 12px;
+}
+.auth-divider::before, .auth-divider::after {
+  content: ""; flex: 1; height: 1px; background: #E5E8EE;
+}
+
+.google-btn {
+  width: 100%; padding: 11px; border: 1.5px solid #E5E8EE; border-radius: 10px;
+  background: #fff; font-family: inherit; font-size: 13.5px; font-weight: 600;
+  color: #1e293b; cursor: pointer; display: flex; align-items: center; justify-content: center;
+  gap: 10px; transition: border-color .15s;
+}
+.google-btn:hover { border-color: #94a3b8; }
+
+/* ── Step 2: Terms of Service ── */
+.tos-icon {
+  width: 52px; height: 52px; border-radius: 14px;
+  background: #EFF6FF; color: #2563EB;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 20px;
+}
+.tos-body {
+  background: #F8FAFC; border: 1.5px solid #E5E8EE;
+  border-radius: 10px; padding: 16px 18px;
+  height: 200px; overflow-y: auto;
+  font-size: 12px; color: #475569; line-height: 1.7;
+  margin-bottom: 18px;
+}
+.tos-body h4 { font-size: 12.5px; font-weight: 700; color: #0F172A; margin-bottom: 6px; margin-top: 14px; }
+.tos-body h4:first-child { margin-top: 0; }
+.tos-body p { margin-bottom: 8px; }
+
+.tos-check-row {
+  display: flex; align-items: flex-start; gap: 10px;
+  background: #F8FAFC; border: 1.5px solid #E5E8EE;
+  border-radius: 10px; padding: 12px 14px; margin-bottom: 18px;
+  cursor: pointer;
+}
+.tos-check-row input[type="checkbox"] { margin-top: 2px; flex-shrink: 0; cursor: pointer; accent-color: #2563EB; width: 16px; height: 16px; }
+.tos-check-label { font-size: 12.5px; color: #374151; line-height: 1.5; }
+.tos-check-label a { color: #2563EB; text-decoration: none; }
+.tos-check-label a:hover { text-decoration: underline; }
+
+.tos-agree-btn {
+  width: 100%; padding: 13px; border: none; border-radius: 10px;
+  background: #10B981; color: #fff; font-family: inherit;
+  font-size: 14.5px; font-weight: 700; cursor: pointer;
+  transition: background .15s; letter-spacing: -0.01em;
+}
+.tos-agree-btn:hover { background: #059669; }
+.tos-agree-btn:disabled { background: #D1FAE5; color: #6EE7B7; cursor: not-allowed; }
+
+/* ── Step 3: Profile Photo ── */
+.photo-upload-area {
+  border: 2px dashed #E5E8EE; border-radius: 14px;
+  padding: 36px 20px; text-align: center;
+  cursor: pointer; transition: all .2s; position: relative;
+  margin-bottom: 18px; background: #FAFAFA;
+}
+.photo-upload-area:hover { border-color: #2563EB; background: #EFF6FF; }
+.photo-upload-area input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+
+.photo-preview-ring {
+  width: 84px; height: 84px; border-radius: 50%;
+  border: 3px dashed #CBD5E1; margin: 0 auto 14px;
+  display: flex; align-items: center; justify-content: center;
+  background: #F1F5F9; overflow: hidden; transition: border-color .2s;
+}
+.photo-preview-ring.has-photo { border-style: solid; border-color: #10B981; }
+.photo-preview-ring img { width: 100%; height: 100%; object-fit: cover; }
+
+.upload-title { font-size: 14px; font-weight: 700; color: #0F172A; margin-bottom: 4px; }
+.upload-sub { font-size: 12px; color: #64748B; }
+
+.photo-why {
+  background: #FFFBEB; border: 1px solid #FDE68A;
+  border-radius: 10px; padding: 12px 14px; margin-bottom: 18px;
+  display: flex; gap: 10px; align-items: flex-start;
+}
+.photo-why-icon { color: #F59E0B; flex-shrink: 0; margin-top: 1px; }
+.photo-why-text { font-size: 12px; color: #92400E; line-height: 1.5; }
+.photo-why-text strong { color: #78350F; font-weight: 700; }
+
+.skip-link {
+  display: block; text-align: center; font-size: 12.5px; color: #94a3b8;
+  text-decoration: none; margin-top: 12px; cursor: pointer;
+}
+.skip-link:hover { color: #64748B; text-decoration: underline; }
+
+/* ── Step 4: Loading / Success ── */
+.loading-bar {
+  height: 3px; background: #E5E8EE; border-radius: 2px; overflow: hidden; margin-bottom: 28px;
+}
+.loading-fill {
+  height: 100%; background: #10B981; border-radius: 2px;
+  animation: fillBar 2s ease-in-out forwards;
+}
+@keyframes fillBar { from { width: 0%; } to { width: 100%; } }
+
+.success-icon {
+  width: 64px; height: 64px; border-radius: 50%;
+  background: #ECFDF5; color: #10B981;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 16px;
+}
+.success-title { font-size: 22px; font-weight: 700; color: #0F172A; margin-bottom: 8px; letter-spacing: -0.02em; text-align: center; }
+.success-sub { font-size: 13.5px; color: #64748B; line-height: 1.6; margin-bottom: 24px; text-align: center; }
+.success-btn {
+  display: block; background: #10B981; color: #fff; font-weight: 700;
+  font-size: 14px; padding: 13px; border-radius: 10px; width: 100%;
+  text-decoration: none; letter-spacing: -0.01em; text-align: center;
+  border: none; font-family: inherit; cursor: pointer;
+}
+
+/* Step indicator */
+.step-indicator {
+  display: flex; align-items: center; gap: 6px;
+  margin-bottom: 28px;
+}
+.step-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: #CBD5E1; transition: all .2s;
+}
+.step-dot.active { background: #2563EB; width: 22px; border-radius: 4px; }
+.step-dot.done { background: #94a3b8; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script type="text/babel" data-presets="react">
+
+const SvgIcon = ({ path, size = 16, strokeWidth = 1.9, fill = "none" }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill={fill} stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+    <path d={path} />
+  </svg>
+);
+
+/* ─── Left panel ─── */
+function ContextPanel() {
+  return (
+    <div className="context-panel">
+
+
+      <div className="cp-headline">
+        <span>REConnect Is Ready for You!</span>
+      </div>
+      <div className="cp-subline">
+        Your REConnect account is live and ready to use. Log in now to access your listings and marketing tools.
+      </div>
+
+      <div className="cp-section-title">What to do once you're in</div>
+
+      <div className="cp-checklist">
+        {[
+          "Browse your active MLS listings — they're already loaded.",
+          "Check your free Single Listing Website.",
+          "Explore Canva templates and start creating marketing materials.",
+        ].map((text, i) => (
+          <div key={i} className="cp-check-item">
+            <div className="cp-check-icon">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M5 12l5 5L20 7"/>
+              </svg>
+            </div>
+            <div className="cp-check-text">{text}</div>
+          </div>
+        ))}
+      </div>
+
+      <div className="cp-testimonial">
+        <div className="cp-test-avas">
+          {[
+            "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=60&auto=format",
+            "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=60&auto=format",
+            "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=60&auto=format",
+            "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=60&auto=format",
+          ].map((src, i) => (
+            <div key={i} className="cp-test-ava" style={{ backgroundImage:`url(${src})` }}></div>
+          ))}
+        </div>
+        <div className="cp-test-text">
+          <strong>2,400+ agents</strong> already on REConnect
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ─── Step indicators ─── */
+function StepDots({ current, total }) {
+  return (
+    <div className="step-indicator">
+      {Array.from({ length: total }).map((_, i) => (
+        <div
+          key={i}
+          className={`step-dot ${i === current ? "active" : i < current ? "done" : ""}`}
+        />
+      ))}
+    </div>
+  );
+}
+
+/* ─── Step 1: Login ─── */
+function StepLogin({ onNext }) {
+  const [loading, setLoading] = React.useState(false);
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setTimeout(() => { setLoading(false); onNext(); }, 1200);
+  };
+  return (
+    <div className="step active">
+      <StepDots current={0} total={3} />
+      <div className="auth-headline">Welcome to REConnect</div>
+      <div className="auth-sub">Sign in with your HGAR REConnect credentials to access your account.</div>
+
+      <form onSubmit={handleSubmit}>
+        <div className="field">
+          <label>Email address</label>
+          <input type="email" placeholder="agent@email.com" defaultValue="agent@email.com" required />
+        </div>
+        <div className="field">
+          <label style={{ display:"flex", alignItems:"center", justifyContent:"space-between" }}>
+            Password
+            <a href="#" className="forgot-link">Forgot password?</a>
+          </label>
+          <input type="password" placeholder="••••••••" defaultValue="password123" required />
+        </div>
+        <button className="submit-btn" type="submit" disabled={loading}>
+          {loading ? "Signing in…" : "Log in to REConnect →"}
+        </button>
+
+        <div className="auth-divider">or</div>
+
+        <button type="button" className="google-btn" onClick={() => { setLoading(true); setTimeout(() => { setLoading(false); onNext(); }, 1000); }}>
+          <svg width="18" height="18" viewBox="0 0 24 24">
+            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+          </svg>
+          Continue with Google
+        </button>
+      </form>
+    </div>
+  );
+}
+
+/* ─── Step 2: Terms of Service ─── */
+function StepTOS({ onNext }) {
+  const [agreed, setAgreed] = React.useState(false);
+  return (
+    <div className="step active">
+      <StepDots current={1} total={3} />
+      <div className="auth-headline">Terms of Service</div>
+      <div className="auth-sub" style={{ marginBottom:16 }}>Please review and accept our terms to continue. This is a one-time step.</div>
+
+      <div className="tos-body">
+        <p style={{ color:"#64748b", fontSize:"11px", marginBottom:10 }}>Last updated November 1, 2025</p>
+        <h4>Agreement of Terms</h4>
+        <p>These Terms of Use constitute a legally binding agreement between you and Neutrino, Inc. ("Company", "we", "us") concerning your access to and use of the REConnect website (https://reconnect.neutrinoinc.com) and the REConnect Application. By accessing the Site and App, you have read, understood, and agreed to be bound by all of these Terms. IF YOU DO NOT AGREE, YOU ARE PROHIBITED FROM USING THE APP AND MUST DISCONTINUE USE IMMEDIATELY.</p>
+        <p>We reserve the right to make changes to these Terms at any time. You will be subject to the changes in any revised Terms by your continued use of the Site after revised Terms are posted.</p>
+        <h4>Intellectual Property Rights</h4>
+        <p>Unless otherwise indicated, the Site and App is our proprietary property. All source code, databases, functionality, software, designs, text, photographs, and graphics (the "Content") and trademarks, service marks, and logos (the "Marks") are owned or controlled by us and protected by copyright and trademark laws. The Content and Marks are provided "AS IS" for your personal use only. No part of the Site and App may be copied, reproduced, republished, uploaded, sold, licensed, or otherwise exploited for any commercial purpose without our express prior written permission.</p>
+        <h4>User Representations</h4>
+        <p>By using the Site and App, you represent and warrant that: (1) all registration information you submit will be true, accurate, current, and complete; (2) you have the legal capacity to comply with these Terms; (3) you are not a minor in your jurisdiction; (4) you will not use the Site and App for any illegal or unauthorized purpose; and (5) your use will not violate any applicable law or regulation.</p>
+        <h4>User Registration</h4>
+        <p>You may be required to register with the Site and App. You agree to keep your password confidential and will be responsible for all use of your account and password. We reserve the right to remove or change a username we determine to be inappropriate or objectionable.</p>
+        <h4>Prohibited Activities</h4>
+        <p>You may not use the Site and App for any purpose other than that for which we make it available. As a user, you agree not to: systematically retrieve data to create a database without written permission; trick, defraud, or mislead us or other users; circumvent security features; use information obtained from the Site to harass or harm another person; upload viruses or other malicious material; engage in any automated use of the system; or use the Site and App to compete with us.</p>
+        <h4>MLS Compliance</h4>
+        <p>As a condition of your continued access, you agree to promptly complete and submit a Participant Data Access Policy (PDAP) form upon request. Your completed PDAP form may be required by your MLS as a condition of our continued access to MLS data.</p>
+        <h4>Subscriptions & Payments</h4>
+        <p>New users may access a free trial. At the end of the trial, your account will automatically convert to a paid subscription unless you cancel via your account settings at reconnect.neutrinoinc.com. We do not provide refunds nor refunds for partial periods.</p>
+        <h4>Privacy Policy</h4>
+        <p>We care about data privacy and security. Please review our Privacy Policy at https://reconnect.neutrinoinc.com/privacy-policy2. By using the Site and App, you agree to be bound by our Privacy Policy, which is incorporated into these Terms. The Site and App is hosted in the United States.</p>
+        <h4>Term and Termination</h4>
+        <p>These Terms shall remain in full force and effect while you use the Site and App. We reserve the right, in our sole discretion and without notice or liability, to deny access to any person for any reason, including breach of any representation, warranty, or covenant in these Terms. If we terminate your account, you are prohibited from registering a new account under any name.</p>
+        <h4>Governing Law</h4>
+        <p>These Terms and your use of the Site and App are governed by and construed in accordance with the laws of the State of Washington, without regard to its conflict of law principles.</p>
+        <h4>Contact Us</h4>
+        <p>Neutrino, Inc. · 9208 20th Ave NE, Seattle, WA 98115 · Phone: 206-508-4417 · info@neutrinoinc.com</p>
+      </div>
+
+      <label className="tos-check-row">
+        <input type="checkbox" checked={agreed} onChange={e => setAgreed(e.target.checked)} />
+        <span className="tos-check-label">
+          I have read and agree to REConnect's <a href="#" onClick={e => e.stopPropagation()}>Terms of Service</a> and <a href="#" onClick={e => e.stopPropagation()}>Privacy Policy</a>.
+        </span>
+      </label>
+
+      <button className="tos-agree-btn" disabled={!agreed} onClick={onNext}>
+        {agreed ? "Agree & Continue →" : "Please accept to continue"}
+      </button>
+    </div>
+  );
+}
+
+/* ─── Step 3: Profile Photo ─── */
+function StepPhoto({ onNext }) {
+  const [photoSrc, setPhotoSrc] = React.useState(null);
+  const [uploading, setUploading] = React.useState(false);
+
+  const handleFile = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => setPhotoSrc(ev.target.result);
+    reader.readAsDataURL(file);
+  };
+
+  const handleContinue = () => {
+    if (photoSrc) {
+      setUploading(true);
+      setTimeout(() => { setUploading(false); onNext(); }, 1200);
+    } else {
+      onNext();
+    }
+  };
+
+  return (
+    <div className="step active">
+      <StepDots current={2} total={3} />
+      <div className="auth-headline">Add Your Profile Photo</div>
+      <div className="auth-sub" style={{ marginBottom:16 }}>Optional, but highly recommended — your photo appears on your Single Listing Website and all marketing materials.</div>
+
+      <div className="photo-why">
+        <svg className="photo-why-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="12" y1="8" x2="12" y2="12"/>
+          <line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+        <div className="photo-why-text">
+          <strong>Make a great first impression.</strong> Listings and marketing materials with an agent photo generate significantly more engagement from buyers and sellers.
+        </div>
+      </div>
+
+      <div className="photo-upload-area" onClick={() => document.getElementById('photo-input').click()}>
+        <input id="photo-input" type="file" accept="image/*" onChange={handleFile} style={{ display:"none" }} />
+        <div className={`photo-preview-ring ${photoSrc ? "has-photo" : ""}`}>
+          {photoSrc
+            ? <img src={photoSrc} alt="Preview" />
+            : <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                <circle cx="12" cy="7" r="4"/>
+              </svg>
+          }
+        </div>
+        <div className="upload-title">{photoSrc ? "Looking great! Click to change" : "Click to upload your photo"}</div>
+        <div className="upload-sub">JPG, PNG — recommended 400×400px or larger</div>
+      </div>
+
+      <button className="submit-btn" style={{ background: photoSrc ? "#10B981" : "#1D4ED8" }} onClick={handleContinue} disabled={uploading}>
+        {uploading ? "Uploading…" : photoSrc ? "Save Photo & Enter REConnect →" : "Upload a Photo & Continue →"}
+      </button>
+      <span className="skip-link" onClick={onNext}>Skip for now — I'll add it later</span>
+    </div>
+  );
+}
+
+/* ─── Step 4: Success ─── */
+function StepSuccess() {
+  React.useEffect(() => {
+    const t = setTimeout(() => { window.location.href = "Reconnect Member.html"; }, 3500);
+    return () => clearTimeout(t);
+  }, []);
+  return (
+    <div className="step active" style={{ textAlign:"center", paddingTop:20 }}>
+      <div className="loading-bar"><div className="loading-fill"></div></div>
+      <div className="success-icon">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M5 12l5 5L20 7"/>
+        </svg>
+      </div>
+      <div className="success-title">You're all set!</div>
+      <div className="success-sub">Taking you to your REConnect dashboard now…</div>
+      <a href="Reconnect Member.html" className="success-btn">Open REConnect Dashboard →</a>
+    </div>
+  );
+}
+
+/* ─── Main App ─── */
+function HGARLoginApp() {
+  const [step, setStep] = React.useState(0); // 0=login, 1=tos, 2=photo, 3=success
+
+  return (
+    <div className="layout">
+      <ContextPanel />
+      <div className="auth-panel">
+        <div className="auth-inner">
+          <div className="auth-logo">
+            <img src="uploads/ReConnect_logo_final.svg" alt="REConnect" style={{ width:180, marginLeft:"-11px" }} />
+          </div>
+          {step === 0 && <StepLogin onNext={() => setStep(1)} />}
+          {step === 1 && <StepTOS onNext={() => setStep(2)} />}
+          {step === 2 && <StepPhoto onNext={() => setStep(3)} />}
+          {step === 3 && <StepSuccess />}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<HGARLoginApp />);
+</script>
+</body>
+</html>

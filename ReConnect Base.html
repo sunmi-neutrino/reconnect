@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>REConnect Base</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css?v=3" />
+<script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+</head>
+<body>
+<div id="root"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script src="data.js"></script>
+<script type="text/babel" src="tweaks-panel.jsx"></script>
+<script type="text/babel" src="shell.jsx"></script>
+<script type="text/babel" src="dashboard.jsx"></script>
+<script type="text/babel" src="listings.jsx?v=6"></script>
+<script type="text/babel" src="showcases.jsx"></script>
+<script type="text/babel" src="other-pages.jsx"></script>
+<script type="text/babel" src="settings-pages.jsx"></script>
+<script type="text/babel" src="users-page.jsx"></script>
+
+<script type="text/babel" data-presets="react">
+
+
+const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+  "primaryColor": "#2563EB",
+  "navStyle": "navy",
+  "density": "comfortable",
+  "showStats": true
+}/*EDITMODE-END*/;
+
+function App() {
+  const [route, setRoute] = React.useState(new URLSearchParams(window.location.search).get('page') || "dashboard");
+  const [collapsed, setCollapsed] = React.useState(false);
+  const [mobileNavOpen, setMobileNavOpen] = React.useState(false);
+  const [profileOpen, setProfileOpen] = React.useState(false);
+  const [selected, setSelected] = React.useState([]);
+  const [shareKind, setShareKind] = React.useState(null);
+  const [inviteOpen, setInviteOpen] = React.useState(false);
+  const [toast, setToast] = React.useState(null);
+  const [tweaksValues, setTweak] = window.useTweaks ? window.useTweaks(TWEAK_DEFAULTS) : [TWEAK_DEFAULTS, () => {}];
+  const t = tweaksValues;
+
+  // apply primary color (only when user explicitly chose a non-green)
+  React.useEffect(() => {
+    if (t.primaryColor && t.primaryColor !== '#10B981') {
+      document.documentElement.style.setProperty('--green-500', t.primaryColor);
+    } else {
+      document.documentElement.style.removeProperty('--green-500');
+    }
+  }, [t.primaryColor]);
+
+  React.useEffect(() => {
+    const onClick = (e) => {
+      if (!e.target.closest(".profile-menu") && !e.target.closest(".avatar")) setProfileOpen(false);
+    };
+    document.addEventListener("click", onClick);
+    return () => document.removeEventListener("click", onClick);
+  }, []);
+
+  const go = (r) => { setRoute(r); window.scrollTo(0, 0); };
+
+  const onShare = (kind) => setShareKind(kind);
+
+  // crumbs — {label, route} objects; route=null means current (non-clickable)
+  let crumbs = [{ label: "REConnect", route: "dashboard" }];
+  if (route === "dashboard")               crumbs.push({ label: "Dashboard", route: null });
+  else if (route === "listings")           crumbs.push({ label: "Listings", route: null });
+  else if (route.startsWith("listing/"))  { crumbs.push({ label: "Listings", route: "listings" }); crumbs.push({ label: "Detail", route: null }); }
+  else if (route === "new-listing")       { crumbs.push({ label: "Listings", route: "listings" }); crumbs.push({ label: "New Listing", route: null }); }
+  else if (route.startsWith("edit-listing/")) { crumbs.push({ label: "Listings", route: "listings" }); crumbs.push({ label: "Edit Listing", route: null }); }
+  else if (route === "spotlights")          crumbs.push({ label: "Spotlights", route: null });
+  else if (route.startsWith("spotlight/")) { crumbs.push({ label: "Spotlights", route: "spotlights" }); crumbs.push({ label: "Detail", route: null }); }
+  else if (route === "new-spotlight")      { crumbs.push({ label: "Spotlights", route: "spotlights" }); crumbs.push({ label: "New Spotlight", route: null }); }
+  else if (route === "company")            crumbs.push({ label: "Company Marketing", route: null });
+  else if (route.startsWith("company/"))  { crumbs.push({ label: "Company Marketing", route: "company" }); crumbs.push({ label: "Package", route: null }); }
+  else if (route === "new-company")       { crumbs.push({ label: "Company Marketing", route: "company" }); crumbs.push({ label: "New Package", route: null }); }
+  else if (route === "network")            crumbs.push({ label: "Network", route: null });
+  else if (route.startsWith("network/"))  { crumbs.push({ label: "Network", route: "network" }); crumbs.push({ label: "Member", route: null }); }
+  else if (route === "amp")               crumbs.push({ label: "AMP", route: null });
+  else if (route.startsWith("amp-listing/")) { crumbs.push({ label: "AMP", route: "amp" }); crumbs.push({ label: "Detail", route: null }); }
+  else if (route === "portfolio")         crumbs.push({ label: "Portfolio Sites", route: null });
+  else if (route === "canva")              crumbs.push({ label: "Canva", route: null });
+  else if (route === "new-template")      { crumbs.push({ label: "Canva", route: "canva" }); crumbs.push({ label: "Add Template", route: null }); }
+  else if (route === "profile")           crumbs.push({ label: "User", route: null });
+  else if (route === "account-settings")  crumbs.push({ label: "Account Settings", route: null });
+  else if (route === "mls-info")          crumbs.push({ label: "MLS Settings", route: null });
+  else if (route === "plans")             crumbs.push({ label: "Plans", route: null });
+  else if (route === "support")           crumbs.push({ label: "Support", route: null });
+  else if (route === "users")             crumbs.push({ label: "Users", route: null });
+  else if (route === "billing-history")   crumbs.push({ label: "Billing History", route: null });
+  else if (route === "payment-method")    crumbs.push({ label: "Payment Method", route: null });
+
+  let page = null;
+  if (route === "dashboard") page = <Dashboard go={go} />;
+  else if (route === "listings") page = <Listings go={go} selected={selected} setSelected={setSelected} onShare={onShare} />;
+  else if (route.startsWith("listing/")) page = <ListingDetail id={route.split("/")[1]} go={go} onShare={onShare} defaultTab={route.split("/")[2] || "basics"} />;
+  else if (route === "new-listing") page = <NewListing go={go} />;
+  else if (route.startsWith("edit-listing/")) page = <EditListing id={route.split("/")[1]} go={go} />;
+  else if (route === "spotlights") page = <Spotlights go={go} onShare={onShare} />;
+  else if (route.startsWith("spotlight/")) page = <SpotlightDetail id={route.split("/")[1]} go={go} onShare={onShare} />;
+  else if (route === "new-spotlight") page = <NewSpotlight go={go} />;
+  else if (route === "company") page = <CompanyMarketing go={go} />;
+  else if (route.startsWith("company/")) page = <CompanyDetail id={route.split("/")[1]} go={go} />;
+  else if (route === "new-company") page = <NewCompanyMarketing go={go} />;
+  else if (route === "network") page = <Network go={go} onInvite={() => setInviteOpen(true)} />;
+  else if (route.startsWith("network/")) page = <NetworkMemberDetail id={route.split("/")[1]} go={go} />;
+  else if (route === "amp") page = <AMPListings go={go} selected={selected} setSelected={setSelected} onShare={onShare} />;
+  else if (route.startsWith("amp-listing/")) page = <ListingDetail id={route.split("/")[1]} go={go} onShare={onShare} backRoute="amp" backLabel="Back to AMP" />;
+  else if (route === "portfolio") page = <PortfolioSites go={go} />;
+  else if (route === "canva") page = <Canva go={go} />;
+  else if (route === "new-template") page = <NewTemplate go={go} />;
+  else if (route === "profile") page = <MyProfile go={go} />;
+  else if (route === "account-settings") page = <AccountSettings go={go} />;
+  else if (route === "mls-info") page = <ManageMLSInfo go={go} />;
+  else if (route === "plans") page = <SubscriptionPlans go={go} />;
+  else if (route === "support") page = <HelpSupport go={go} />;
+  else if (route === "users") page = <Users go={go} />;
+  else if (route === "billing-history") page = <BillingHistory go={go} />;
+  else if (route === "payment-method") page = <PaymentMethod go={go} />;
+
+  const counts = {
+    listings: RC_DATA.listings.filter(l => l.owner === "me").length,
+    spotlights: RC_DATA.spotlights.filter(s => s.owner === "me").length,
+    network: RC_DATA.network.filter(n => !n.pending).length,
+  };
+
+  return (
+    <div className={`app ${collapsed ? "collapsed" : ""} ${mobileNavOpen ? "mobile-nav-open" : ""}`}>
+      <div className="mobile-nav-overlay" onClick={() => setMobileNavOpen(false)} />
+      <Sidebar route={route} setRoute={go} collapsed={collapsed} setCollapsed={setCollapsed} counts={counts} onMobileClose={() => setMobileNavOpen(false)} />
+      <div>
+        <TopBar
+          crumbs={crumbs}
+          route={route}
+          go={go}
+          onProfileClick={(e) => { e.stopPropagation(); setProfileOpen(!profileOpen); }}
+          profileOpen={profileOpen}
+          onMenuChoose={(r) => { setProfileOpen(false); if (r) go(r); }}
+          onMobileMenuClick={() => setMobileNavOpen(!mobileNavOpen)}
+        />
+        <main className="main">{page}</main>
+      </div>
+
+      {shareKind && <ShareModal kind={shareKind} count={selected.length} onClose={() => { setShareKind(null); setToast("Share sent to network"); setTimeout(() => setToast(null), 2200); }} />}
+      {inviteOpen && <InviteModal onClose={() => { setInviteOpen(false); setToast("Invitation sent"); setTimeout(() => setToast(null), 2200); }} />}
+      {toast && <div className="toast"><Icon name="check" size={14} stroke={3} /> {toast}</div>}
+
+      {window.TweaksPanel && (
+        <window.TweaksPanel>
+          <window.TweakSection title="Brand">
+            <window.TweakColor
+              label="Primary action color"
+              value={t.primaryColor}
+              onChange={(v) => setTweak('primaryColor', v)}
+              options={['#10B981', '#2563EB', '#7C3AED', '#F59E0B']}
+            />
+          </window.TweakSection>
+          <window.TweakSection title="Layout">
+            <window.TweakRadio
+              label="Density"
+              value={t.density}
+              options={[{value: 'comfortable', label: 'Comfortable'}, {value: 'compact', label: 'Compact'}]}
+              onChange={(v) => setTweak('density', v)}
+            />
+            <window.TweakToggle
+              label="Show dashboard stats"
+              value={t.showStats}
+              onChange={(v) => setTweak('showStats', v)}
+            />
+          </window.TweakSection>
+        </window.TweaksPanel>
+      )}
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+</script>
+</body>
+</html>

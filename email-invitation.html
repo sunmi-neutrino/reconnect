@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Email Preview — Member Invitation</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: #DDE1E9; font-family: "Poppins", Arial, sans-serif; padding: 0 0 60px; }
+
+/* ── Preview nav ── */
+.preview-nav {
+  background: #0B1F3A;
+  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.preview-nav-label { font-size: 11px; font-weight: 700; color: #6b86ad; text-transform: uppercase; letter-spacing: 0.06em; margin-right: 4px; }
+.preview-nav a {
+  font-size: 12px; font-weight: 500; color: #93c5fd;
+  text-decoration: none; padding: 4px 12px; border-radius: 999px;
+  border: 1px solid rgba(147,197,253,0.2);
+  transition: all .15s;
+}
+.preview-nav a:hover { background: rgba(147,197,253,0.12); }
+.preview-nav a.active { background: #2563EB; color: #fff; border-color: #2563EB; }
+.preview-nav .sep { color: #6b86ad; font-size: 13px; margin: 0 4px; }
+.preview-nav .flow-link {
+  color: #10B981; border-color: rgba(16,185,129,0.3);
+}
+.preview-nav .flow-link:hover { background: rgba(16,185,129,0.12); }
+
+/* ── Email wrapper ── */
+.email-stage {
+  max-width: 660px;
+  margin: 32px auto 0;
+  padding: 0 16px;
+}
+.email-window {
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 12px 48px rgba(0,0,0,0.2);
+}
+.email-chrome {
+  background: #F8FAFC;
+  border-bottom: 1px solid #E5E8EE;
+  padding: 14px 20px;
+}
+.email-chrome-row { font-size: 13px; color: #1e293b; line-height: 1.8; }
+.email-chrome-row strong { font-weight: 600; color: #0F172A; }
+
+/* ── Email body ── */
+.email-body { background: #F6F7F9; }
+.email-header {
+  background: #fff;
+  border-bottom: 1px solid #E5E8EE;
+  padding: 22px 48px;
+  text-align: center;
+}
+.email-header img { width: 172px; height: auto; }
+.email-hero-bar {
+  background: linear-gradient(135deg, #0B1F3A 0%, #122a4d 100%);
+  padding: 32px 48px;
+  text-align: center;
+}
+.email-main { background: #fff; border-radius: 0 0 0 0; }
+.email-section { padding: 36px 48px; }
+.email-section + .email-section { border-top: 1px solid #F0F2F5; padding-top: 28px; }
+.email-footer {
+  background: #0B1F3A;
+  padding: 24px 48px;
+  text-align: center;
+}
+
+/* ── Sender card ── */
+.sender-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: #F6F7F9;
+  border: 1px solid #E5E8EE;
+  border-radius: 12px;
+  padding: 16px 20px;
+  margin-bottom: 24px;
+}
+.sender-avatar {
+  width: 52px; height: 52px; border-radius: 50%;
+  background-size: cover; background-position: center;
+  border: 3px solid #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  flex-shrink: 0;
+}
+.sender-name { font-size: 14.5px; font-weight: 700; color: #0F172A; }
+.sender-role { font-size: 12.5px; color: #64748B; margin-top: 1px; }
+
+/* ── Message quote ── */
+.quote-block {
+  background: #EFF6FF;
+  border-left: 3px solid #2563EB;
+  border-radius: 0 10px 10px 0;
+  padding: 14px 18px;
+  margin-bottom: 24px;
+}
+.quote-label { font-size: 11.5px; font-weight: 700; color: #2563EB; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; }
+.quote-text { font-size: 13.5px; color: #1e293b; line-height: 1.7; font-style: italic; }
+
+/* ── Features list ── */
+.feature-list { display: flex; flex-direction: column; gap: 14px; }
+.feature-item { display: flex; align-items: flex-start; gap: 14px; }
+.feature-icon {
+  width: 36px; height: 36px; border-radius: 10px;
+  background: #ECFDF5; color: #10B981;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.feature-title { font-size: 13.5px; font-weight: 600; color: #0F172A; margin-bottom: 2px; }
+.feature-desc { font-size: 12.5px; color: #64748B; line-height: 1.55; }
+
+/* ── CTA ── */
+.cta-wrap { text-align: center; padding: 8px 0; }
+.cta-btn {
+  display: inline-block;
+  background: #10B981;
+  color: #fff;
+  font-weight: 700;
+  font-size: 15px;
+  padding: 16px 48px;
+  border-radius: 999px;
+  text-decoration: none;
+  letter-spacing: -0.01em;
+  transition: background .15s;
+}
+.cta-note { margin-top: 12px; font-size: 12px; color: #94a3b8; }
+
+/* ── Social proof ── */
+.social-proof {
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  font-size: 12.5px; color: #94a3b8;
+  margin-top: 20px;
+}
+.sp-avas { display: flex; }
+.sp-ava {
+  width: 26px; height: 26px; border-radius: 50%;
+  background-size: cover; background-position: center;
+  border: 2px solid #fff; margin-left: -7px;
+}
+.sp-ava:first-child { margin-left: 0; }
+</style>
+</head>
+<body>
+
+<!-- Preview nav -->
+<nav class="preview-nav">
+  <span class="preview-nav-label">Email Previews:</span>
+  <a href="email-invitation.html" class="active">Invitation</a>
+  <a href="email-share-listings.html">Share Listings</a>
+  <a href="email-share-showcase.html">Share Showcase</a>
+  <a href="email-share-assets.html">Share Assets</a>
+  <a href="email-share-listings-assets.html">Listings + Assets</a>
+  <span class="sep">→</span>
+  <a href="auth-landing.html#invite" class="flow-link">Auth Landing ↗</a>
+  <a href="Reconnect Member.html" class="flow-link">Member View ↗</a>
+</nav>
+
+<!-- Email stage -->
+<div class="email-stage">
+  <div class="email-window">
+
+    <!-- Email client chrome -->
+    <div class="email-chrome">
+      <div class="email-chrome-row"><strong>From:</strong> Mike Anderson via REConnect &lt;notify@reconnect.app&gt;</div>
+      <div class="email-chrome-row"><strong>To:</strong> Jordan Park &lt;jordan.park@neutrinoinc.com&gt;</div>
+      <div class="email-chrome-row"><strong>Subject:</strong> Mike Anderson invited you to join REConnect</div>
+    </div>
+
+    <!-- Email body -->
+    <div class="email-body">
+
+      <!-- Header -->
+      <div class="email-header">
+        <img src="uploads/Reconnect-Logo-V1.svg" alt="REConnect" />
+      </div>
+
+      <!-- Main content -->
+      <div class="email-main">
+        <div class="email-section">
+
+          <!-- Heading -->
+          <div style="text-align:center; margin-bottom: 28px;">
+            <div style="display:inline-flex; align-items:center; gap:7px; background:#ECFDF5; color:#047857; font-size:12px; font-weight:700; padding:5px 14px; border-radius:999px; letter-spacing:0.04em; text-transform:uppercase; margin-bottom:14px;">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2zM3 7l9 7 9-7"/></svg>
+              You're invited
+            </div>
+            <h1 style="font-size:24px; font-weight:700; color:#0F172A; letter-spacing:-0.02em; line-height:1.3; margin:0 0 10px;">
+              You've been invited to<br>REConnect
+            </h1>
+            <p style="font-size:13.5px; color:#64748B; line-height:1.7; margin:0; max-width:440px; margin:0 auto;">
+              Join the platform real estate professionals use to share listings, curate showcases, and grow their network.
+            </p>
+          </div>
+
+          <!-- Sender card -->
+          <div class="sender-card">
+            <div class="sender-avatar" style="background-image:url(https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=120&auto=format)"></div>
+            <div>
+              <div class="sender-name">Mike Anderson</div>
+              <div class="sender-role">Realtor · Neutrino &nbsp;·&nbsp; Seattle, WA</div>
+            </div>
+            <div style="margin-left:auto; font-size:12px; color:#64748B; text-align:right;">
+              <div style="font-weight:600; color:#0F172A;">62 listings</div>
+              <div>on REConnect</div>
+            </div>
+          </div>
+
+          <!-- Personal note -->
+          <div class="quote-block">
+            <div class="quote-label">Personal message from Mike</div>
+            <div class="quote-text">"Hi Jordan — I'd love to connect on REConnect so we can share listings and showcases with each other. Hope to see you on the platform! — Mike"</div>
+          </div>
+
+        </div>
+
+        <!-- Features section -->
+        <div class="email-section" style="background:#F8FAFC;">
+          <div style="font-size:13px; font-weight:700; color:#64748B; text-transform:uppercase; letter-spacing:0.06em; margin-bottom:18px;">
+            What you'll get access to (free)
+          </div>
+          <div class="feature-list">
+            <div class="feature-item">
+              <div class="feature-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8v10a2 2 0 0 1-2 2h-4v-7H9v7H5a2 2 0 0 1-2-2V11z"/></svg>
+              </div>
+              <div>
+                <div class="feature-title">Browse shared listings</div>
+                <div class="feature-desc">Browse listings REConnect Pro members share with you — view and download full property details, photos, and other assets.</div>
+              </div>
+            </div>
+            <div class="feature-item">
+              <div class="feature-icon" style="background:#EFF6FF; color:#2563EB;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5h18v4H3zM3 11h8v10H3zM13 11h8v10h-8z"/></svg>
+              </div>
+              <div>
+                <div class="feature-title">Access curated showcases</div>
+                <div class="feature-desc">Explore hand-picked property collections and marketing showcases that you can view and download assets.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CTA section -->
+        <div class="email-section">
+          <div class="cta-wrap">
+            <a href="auth-landing.html#invite" class="cta-btn">Accept Invitation →</a>
+            <div class="cta-note">Free to join · No credit card required</div>
+          </div>
+
+          <!-- Social proof -->
+          <div class="social-proof">
+            <div class="sp-avas">
+              <div class="sp-ava" style="background-image:url(https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=60&auto=format)"></div>
+              <div class="sp-ava" style="background-image:url(https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=60&auto=format)"></div>
+              <div class="sp-ava" style="background-image:url(https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=60&auto=format)"></div>
+              <div class="sp-ava" style="background-image:url(https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=60&auto=format)"></div>
+            </div>
+            <span>Joined by 2,400+ agents across the globe</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pro upgrade promo -->
+      <div class="email-section" style="background: linear-gradient(135deg, #0B1F3A 0%, #1a1060 40%, #2d1b6e 70%, #122a4d 100%);">
+        <div style="display:flex; align-items:center; gap:24px;">
+          <!-- Text side -->
+          <div style="flex:1; min-width:0;">
+            <div style="display:inline-flex; align-items:center; gap:6px; background:rgba(196,181,253,0.18); color:#c4b5fd; font-size:11px; font-weight:700; padding:4px 12px; border-radius:999px; letter-spacing:0.05em; text-transform:uppercase; margin-bottom:14px;">
+              REConnect Pro
+            </div>
+            <div style="font-size:18px; font-weight:700; color:#fff; letter-spacing:-0.02em; line-height:1.4; margin-bottom:18px;">
+              Upgrade to REConnect Pro to share your own listings and showcases and build your network.
+            </div>
+            <a href="#" style="display:inline-block; background:linear-gradient(135deg, #7c3aed, #6d28d9); color:#fff; font-weight:700; font-size:13.5px; padding:11px 26px; border-radius:999px; text-decoration:none; letter-spacing:-0.01em; box-shadow:0 4px 20px rgba(124,58,237,0.45);">
+              Get REConnect Pro →
+            </a>
+          </div>
+          <!-- Dashboard thumbnail -->
+          <div style="flex-shrink:0; width:220px;">
+            <img src="uploads/REConnect2-Dashboard.png" alt="REConnect Dashboard" style="width:100%; display:block; border-radius:10px; box-shadow:0 8px 32px rgba(0,0,0,0.4); border:1px solid rgba(255,255,255,0.12);" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="email-footer">
+        <div style="margin-bottom:10px;">
+          <img src="uploads/Reconnect-Logo-V1.svg" alt="REConnect" style="width:130px; filter:brightness(0) invert(1); opacity:0.65;" />
+        </div>
+        <div style="font-size:12px; color:#6b86ad; line-height:1.8;">
+          You received this invitation because Mike Anderson sent you a REConnect invite.<br>
+          Questions? Reply to this email or contact <a href="#" style="color:#93c5fd;">support@reconnect.app</a>
+        </div>
+        <div style="margin-top:14px; font-size:11.5px; color:#4a6080;">
+          © 2026 REConnect · Neutrino, Inc. · Seattle, WA &nbsp;·&nbsp;
+          <a href="#" style="color:#4a6080;">Unsubscribe</a>
+        </div>
+      </div>
+
+    </div><!-- /email-body -->
+  </div><!-- /email-window -->
+</div>
+
+</body>
+</html>

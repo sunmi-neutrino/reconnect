@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>REConnect — Sign in to view what's shared</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body {
+  font-family: "Poppins", system-ui, sans-serif;
+  background: #0B1F3A;
+  color: #0F172A;
+  -webkit-font-smoothing: antialiased;
+  font-size: 14px;
+}
+
+/* ── Layout ── */
+.layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 100vh;
+}
+@media (max-width: 860px) {
+  .layout { grid-template-columns: 1fr; }
+  .context-panel { display: none; }
+}
+
+/* ── Context panel (left) ── */
+.context-panel {
+  background: linear-gradient(160deg, #0B1F3A 0%, #122a4d 100%);
+  padding: 48px 52px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+.context-panel > * { position: relative; z-index: 1; }
+
+.cp-logo { display: flex; align-items: center; gap: 10px; margin-bottom: 48px; }
+.cp-logo img { width: 140px; }
+
+.cp-badge {
+  display: inline-flex; align-items: center; gap: 7px;
+  font-size: 11px; font-weight: 700; padding: 5px 14px; border-radius: 999px;
+  letter-spacing: 0.05em; text-transform: uppercase;
+  margin-bottom: 20px; align-self: flex-start;
+}
+.cp-badge-invite   { background: rgba(16,185,129,0.2); color: #6ee7b7; }
+.cp-badge-listings { background: rgba(37,99,235,0.25); color: #93c5fd; }
+.cp-badge-showcase { background: rgba(16,185,129,0.2); color: #6ee7b7; }
+.cp-badge-assets   { background: rgba(124,58,237,0.25); color: #c4b5fd; }
+
+.cp-headline {
+  font-size: 30px; font-weight: 700; color: #fff;
+  letter-spacing: -0.025em; line-height: 1.25;
+  margin-bottom: 12px;
+}
+.cp-subline { font-size: 14px; color: #93a8c4; line-height: 1.7; margin-bottom: 36px; max-width: 380px; }
+
+/* Sender card */
+.cp-sender {
+  display: flex; align-items: center; gap: 12px;
+  background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px; padding: 14px 18px; margin-bottom: 28px;
+}
+.cp-sender-ava { width: 46px; height: 46px; border-radius: 50%; background-size: cover; background-position: center; border: 2px solid rgba(255,255,255,0.15); flex-shrink: 0; }
+.cp-sender-name { font-size: 14px; font-weight: 700; color: #fff; }
+.cp-sender-role { font-size: 12px; color: #93a8c4; margin-top: 1px; }
+.cp-sender-verb { margin-left: auto; font-size: 11px; font-weight: 700; color: #6ee7b7; text-transform: uppercase; letter-spacing: 0.05em; white-space: nowrap; }
+
+/* Preview cards */
+.cp-preview { flex: 1; display: flex; flex-direction: column; gap: 10px; }
+
+/* Listing mini cards */
+.mini-listing {
+  background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.09);
+  border-radius: 12px; display: flex; align-items: flex-start;
+  padding: 10px; gap: 12px;
+}
+.mini-listing-photo { width: 96px; height: 76px; background-size: cover; background-position: center; flex-shrink: 0; border-radius: 8px; }
+.mini-listing-body { padding: 0; }
+.mini-listing-status { font-size: 10px; font-weight: 700; color: #6ee7b7; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
+.mini-listing-addr { font-size: 13px; font-weight: 700; color: #fff; margin-bottom: 2px; }
+.mini-listing-city { font-size: 11.5px; color: #93a8c4; margin-bottom: 6px; }
+.mini-listing-price { font-size: 15px; font-weight: 700; color: #fff; }
+.mini-listing-detail { font-size: 11px; color: #93a8c4; margin-top: 2px; }
+
+/* Showcase card */
+.cp-showcase-card {
+  background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.09);
+  border-radius: 12px; overflow: hidden;
+}
+.cp-showcase-hero { height: 160px; background-size: cover; background-position: center; position: relative; }
+.cp-showcase-hero-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(8,24,49,0.85) 0%, transparent 60%);
+}
+.cp-showcase-hero-text { position: absolute; bottom: 0; left: 0; right: 0; padding: 14px 16px; }
+.cp-showcase-title { font-size: 15px; font-weight: 700; color: #fff; margin-bottom: 2px; }
+.cp-showcase-desc { font-size: 12px; color: rgba(255,255,255,0.65); line-height: 1.4; }
+.cp-showcase-stats { display: flex; gap: 0; }
+.cp-showcase-stat { flex: 1; padding: 12px 14px; text-align: center; border-right: 1px solid rgba(255,255,255,0.08); }
+.cp-showcase-stat:last-child { border-right: none; }
+.cp-showcase-stat-val { font-size: 18px; font-weight: 700; color: #fff; }
+.cp-showcase-stat-label { font-size: 11px; color: #93a8c4; margin-top: 1px; }
+
+/* Asset preview */
+.cp-assets-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; }
+.cp-asset-card { border-radius: 10px; overflow: hidden; border: 1px solid rgba(255,255,255,0.09); }
+.cp-asset-thumb { height: 90px; background-size: cover; background-position: center; position: relative; }
+.cp-asset-badge { position: absolute; top: 6px; left: 6px; font-size: 9px; font-weight: 700; padding: 2px 7px; border-radius: 4px; text-transform: uppercase; }
+.cp-asset-name { font-size: 11px; font-weight: 600; color: #e2e8f0; padding: 8px 10px; background: rgba(255,255,255,0.05); }
+
+/* Invite features */
+.cp-features { display: flex; flex-direction: column; gap: 12px; }
+.cp-feature { display: flex; align-items: flex-start; gap: 12px; }
+.cp-feature-icon {
+  width: 36px; height: 36px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; color: #fff;
+}
+.cp-feature-title { font-size: 13.5px; font-weight: 600; color: #fff; margin-bottom: 2px; }
+.cp-feature-desc { font-size: 12px; color: #93a8c4; line-height: 1.5; }
+
+/* Bottom testimonial */
+.cp-testimonial {
+  margin-top: auto; padding-top: 32px;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  display: flex; align-items: center; gap: 12px;
+}
+.cp-test-avas { display: flex; }
+.cp-test-ava { width: 28px; height: 28px; border-radius: 50%; background-size: cover; background-position: center; border: 2px solid rgba(255,255,255,0.2); margin-left: -8px; }
+.cp-test-ava:first-child { margin-left: 0; }
+.cp-test-text { font-size: 12.5px; color: #93a8c4; }
+.cp-test-text strong { color: #cbd5e1; font-weight: 600; }
+
+/* ── Auth panel (right) ── */
+.auth-panel {
+  background: #fff;
+  display: flex; align-items: center; justify-content: center;
+  padding: 48px 52px;
+}
+.auth-inner { width: 100%; max-width: 380px; }
+
+.auth-logo { display: none; margin-bottom: 32px; }
+@media (max-width: 860px) { .auth-logo { display: block; } }
+
+.auth-tabs {
+  display: flex; border: 1px solid #E5E8EE; border-radius: 10px; overflow: hidden;
+  margin-bottom: 28px; background: #F6F7F9;
+}
+.auth-tab {
+  flex: 1; padding: 10px; font-size: 13.5px; font-weight: 600;
+  background: none; border: none; cursor: pointer; color: #64748B;
+  border-radius: 8px; transition: all .15s;
+}
+.auth-tab.active { background: #fff; color: #0F172A; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+
+.auth-headline { font-size: 22px; font-weight: 700; color: #0F172A; letter-spacing: -0.02em; margin-bottom: 6px; line-height: 1.3; }
+.auth-sub { font-size: 13.5px; color: #64748B; line-height: 1.6; margin-bottom: 28px; }
+
+.field { margin-bottom: 14px; }
+.field label { display: block; font-size: 12.5px; font-weight: 600; color: #1e293b; margin-bottom: 5px; }
+.field input {
+  width: 100%; padding: 10px 14px; border: 1.5px solid #E5E8EE; border-radius: 8px;
+  font-family: inherit; font-size: 13.5px; color: #0F172A;
+  transition: border-color .15s; outline: none; background: #fff;
+}
+.field input:focus { border-color: #2563EB; box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
+.field input::placeholder { color: #94a3b8; }
+
+.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+.submit-btn {
+  width: 100%; padding: 13px; border: none; border-radius: 10px;
+  background: #10B981; color: #fff; font-family: inherit;
+  font-size: 14.5px; font-weight: 700; cursor: pointer;
+  transition: background .15s; margin-top: 8px; letter-spacing: -0.01em;
+}
+.submit-btn:hover { background: #059669; }
+
+.auth-divider {
+  display: flex; align-items: center; gap: 12px;
+  margin: 20px 0; color: #94a3b8; font-size: 12px;
+}
+.auth-divider::before, .auth-divider::after {
+  content: ""; flex: 1; height: 1px; background: #E5E8EE;
+}
+
+.google-btn {
+  width: 100%; padding: 11px; border: 1.5px solid #E5E8EE; border-radius: 10px;
+  background: #fff; font-family: inherit; font-size: 13.5px; font-weight: 600;
+  color: #1e293b; cursor: pointer; display: flex; align-items: center; justify-content: center;
+  gap: 10px; transition: border-color .15s;
+}
+.google-btn:hover { border-color: #94a3b8; }
+.google-icon { width: 18px; height: 18px; }
+
+.auth-footer { margin-top: 20px; text-align: center; font-size: 12px; color: #94a3b8; line-height: 1.6; }
+.auth-footer a { color: #2563EB; text-decoration: none; }
+.auth-footer a:hover { text-decoration: underline; }
+
+/* ── Loading / Success state ── */
+.auth-success {
+  display: none; text-align: center; padding: 20px 0;
+}
+.auth-success.visible { display: block; }
+.success-icon {
+  width: 64px; height: 64px; border-radius: 50%;
+  background: #ECFDF5; color: #10B981;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 16px; font-size: 28px;
+}
+.success-title { font-size: 22px; font-weight: 700; color: #0F172A; margin-bottom: 8px; letter-spacing: -0.02em; }
+.success-sub { font-size: 13.5px; color: #64748B; line-height: 1.6; margin-bottom: 24px; }
+.success-btn {
+  display: inline-block; background: #10B981; color: #fff; font-weight: 700;
+  font-size: 14px; padding: 13px 36px; border-radius: 999px;
+  text-decoration: none; letter-spacing: -0.01em;
+}
+.loading-bar {
+  height: 3px; background: #E5E8EE; border-radius: 2px; overflow: hidden; margin-bottom: 20px;
+}
+.loading-fill {
+  height: 100%; background: #10B981; border-radius: 2px;
+  animation: fillBar 1.8s ease-in-out forwards;
+}
+@keyframes fillBar { from { width: 0%; } to { width: 100%; } }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script type="text/babel" data-presets="react">
+
+// Reusable inline SVG icon
+const SvgIcon = ({ path, size = 14, strokeWidth = 1.9 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+    <path d={path} />
+  </svg>
+);
+
+const ICON_PATHS = {
+  mail:     "M3 7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2zM3 7l9 7 9-7",
+  home:     "M3 11l9-8 9 8v10a2 2 0 0 1-2 2h-4v-7H9v7H5a2 2 0 0 1-2-2V11z",
+  showcase: "M3 5h18v4H3zM3 11h8v10H3zM13 11h8v10h-8z",
+  image:    "M3 5h18v14H3zM3 16l5-5 5 5 3-3 5 5M9 10a2 2 0 1 0 0-4 2 2 0 0 0 0 4z",
+  network:  "M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM4 21a8 8 0 0 1 16 0",
+  check:    "M5 12l5 5L20 7",
+};
+
+const SCENARIOS = {
+  invite: {
+    badge: "invite",
+    badgeText: "Invitation", badgeIcon: "mail",
+    headline: "Mike Anderson invited you to REConnect",
+    subline: "Join the platform real estate professionals use to share listings, collaborate on deals, and grow their network.",
+    mode: "signup",
+    modeHeadline: "Create your free account",
+    modeSub: "Accept Mike's invitation and start viewing shared listings and showcases.",
+    successTitle: "Welcome to REConnect!",
+    successSub: "Your account is ready. Opening your member dashboard…",
+    emailPlaceholder: "jordan.park@neutrinoinc.com",
+    dest: "Reconnect Member.html",
+    content: "invite",
+  },
+  listings: {
+    badge: "listings",
+    badgeText: "Listings & assets shared", badgeIcon: "home",
+    headline: "Mike Anderson shared 3 listings and marketing assets with you",
+    subline: "View full property details, photos, and ready-to-use marketing materials for all 3 listings on REConnect.",
+    mode: "signin",
+    modeHeadline: "Sign in to view listings & assets",
+    modeSub: "Mike Anderson shared 3 listings and marketing materials with you.",
+    successTitle: "Opening your listings",
+    successSub: "Taking you to the 3 listings Mike shared with you…",
+    emailPlaceholder: "sarah.chen@coldwellbanker.com",
+    dest: "Reconnect Member.html",
+    content: "listings",
+  },
+  showcase: {
+    badge: "showcase",
+    badgeText: "Showcase shared", badgeIcon: "showcase",
+    headline: "Mike shared a showcase with you",
+    subline: "\"Mercer Island Luxury Collection\" — 6 curated listings, 1,284 views. Sign in to explore the full showcase.",
+    mode: "signin",
+    modeHeadline: "Sign in to view showcase",
+    modeSub: "\"Mercer Island Luxury Collection\" is ready to explore.",
+    successTitle: "Opening showcase",
+    successSub: "Taking you to the Mercer Island Luxury Collection…",
+    emailPlaceholder: "sarah.chen@coldwellbanker.com",
+    dest: "Reconnect Member.html",
+    content: "showcase",
+  },
+  assets: {
+    badge: "assets",
+    badgeText: "Marketing assets", badgeIcon: "image",
+    headline: "3 marketing assets are ready",
+    subline: "Mike Anderson shared marketing materials for 7447 W Mercer Way. Sign in to view, download, and use them.",
+    mode: "signin",
+    modeHeadline: "Sign in to access assets",
+    modeSub: "Mike Anderson shared 3 marketing assets with you.",
+    successTitle: "Opening your assets",
+    successSub: "Taking you to the shared marketing materials…",
+    emailPlaceholder: "sarah.chen@coldwellbanker.com",
+    dest: "Reconnect Member.html",
+    content: "assets",
+  },
+};
+
+const PROP_IMGS = [
+  "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=800&auto=format",
+  "https://images.unsplash.com/photo-1605276374104-dee2a0ed3cd6?w=800&auto=format",
+  "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&auto=format",
+  "https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800&auto=format",
+  "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&auto=format",
+];
+
+const getAssetIcon = (asset) => {
+  const s = { width:10, height:10, viewBox:"0 0 24 24", fill:"none", stroke:"currentColor", strokeWidth:"2", strokeLinecap:"round", strokeLinejoin:"round", style:{flexShrink:0} };
+  if (asset.includes("Photo"))  return <svg {...s}><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>;
+  if (asset.includes("Video"))  return <svg {...s}><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>;
+  if (asset.includes("Flyer"))  return <svg {...s}><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>;
+  if (asset.includes("Social")) return <svg {...s}><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>;
+  if (asset.includes("3D"))     return <svg {...s}><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>;
+  return null;
+};
+
+// Context panel content for each scenario
+const ContextContent = ({ scenario }) => {
+  if (scenario.content === "listings") {
+    const listings = [
+      { addr: "7447 W Mercer Way", city: "Mercer Island, WA · MLS# 2516113", price: "$3,690,000", detail: "5 bd · 4.5 ba · 4,820 sqft", img: PROP_IMGS[0], assets: ["39 Photos", "Video", "Flyer", "Social"] },
+      { addr: "3208 175th Street SE", city: "Bothell, WA · MLS# 2518679", price: "$1,449,950", detail: "4 bd · 3 ba · 3,120 sqft", img: PROP_IMGS[1], assets: ["34 Photos", "Flyer", "Social"] },
+      { addr: "445 Shore Lane NW", city: "Issaquah, WA · MLS# 2521044", price: "$2,195,000", detail: "4 bd · 3.5 ba · 3,740 sqft", img: PROP_IMGS[4], assets: ["28 Photos", "Video", "3D Tour", "Flyer"] },
+    ];
+    return (
+      <div className="cp-preview">
+        {listings.map((l, i) => (
+          <div key={i} className="mini-listing" style={i === 2 ? { position:"relative", overflow:"hidden" } : {}}>
+            <div className="mini-listing-photo" style={{ backgroundImage: `url(${l.img})` }}></div>
+            <div className="mini-listing-body">
+              <div style={{ display:"flex", gap:5, marginBottom:5 }}>
+                <span style={{ fontSize:9.5, fontWeight:700, color:"#6ee7b7", background:"rgba(16,185,129,0.15)", padding:"2px 7px", borderRadius:999, textTransform:"uppercase", letterSpacing:"0.04em" }}>Active</span>
+                <span style={{ fontSize:9.5, fontWeight:600, color:"#93a8c4", background:"rgba(255,255,255,0.07)", padding:"2px 7px", borderRadius:999 }}>Residential</span>
+              </div>
+              <div className="mini-listing-addr">{l.addr}</div>
+              <div className="mini-listing-city">{l.city}</div>
+              <div className="mini-listing-price">{l.price}</div>
+              <div className="mini-listing-detail">{l.detail}</div>
+              <div style={{ display:"flex", gap:10, marginTop:6, flexWrap:"wrap" }}>
+                {l.assets.map((asset, j) => (
+                  <span key={j} style={{ display:"inline-flex", alignItems:"center", gap:5, fontSize:10.5, fontWeight:500, color:"#10B981", whiteSpace:"nowrap" }}>
+                    {getAssetIcon(asset)}
+                    {asset}
+                  </span>
+                ))}
+              </div>
+            </div>
+            {i === 2 && (
+              <div style={{ position:"absolute", top:0, left:0, right:0, bottom:0, backdropFilter:"blur(6px)", WebkitBackdropFilter:"blur(6px)", maskImage:"linear-gradient(to bottom, transparent 0%, black 55%)", WebkitMaskImage:"linear-gradient(to bottom, transparent 0%, black 55%)", zIndex:1 }} />
+            )}
+          </div>
+        ))}
+      </div>
+    );
+  }
+  if (scenario.content === "showcase") {
+    return (
+      <div className="cp-preview">
+        <div className="cp-showcase-card">
+          <div className="cp-showcase-hero" style={{ backgroundImage: `url(${PROP_IMGS[0]})` }}>
+            <div className="cp-showcase-hero-overlay"></div>
+            <div className="cp-showcase-hero-text">
+              <div style={{ display:"inline-flex", alignItems:"center", gap:5, background:"rgba(16,185,129,0.25)", color:"#6ee7b7", fontSize:10, fontWeight:700, padding:"3px 9px", borderRadius:999, textTransform:"uppercase", letterSpacing:"0.04em", marginBottom:7 }}>
+                ● Published
+              </div>
+              <div className="cp-showcase-title">Mercer Island Luxury Collection</div>
+              <div className="cp-showcase-desc">High-end waterfront and view properties on Mercer Island</div>
+            </div>
+          </div>
+          {/* Thumb strip */}
+          <div style={{ display:"flex", gap:6, padding:"12px 14px" }}>
+            {[PROP_IMGS[0], PROP_IMGS[2], PROP_IMGS[3]].map((img, i) => (
+              <div key={i} style={{ flex:1, height:54, borderRadius:7, backgroundImage:`url(${img})`, backgroundSize:"cover", backgroundPosition:"center" }}></div>
+            ))}
+            <div style={{ flex:1, height:54, borderRadius:7, background:"rgba(255,255,255,0.07)", display:"flex", alignItems:"center", justifyContent:"center", fontSize:13, fontWeight:700, color:"#93a8c4" }}>+3</div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+  if (scenario.content === "assets") {
+    const assets = [
+      { name: "Just Listed Post", platform: "INSTAGRAM", style: { background:"#fce7f3", color:"#be185d" }, img: PROP_IMGS[0] },
+      { name: "Open House Flyer", platform: "PDF", style: { background:"#fee2e2", color:"#dc2626" }, img: PROP_IMGS[2] },
+      { name: "Story Reel", platform: "FACEBOOK", style: { background:"#dbeafe", color:"#1d4ed8" }, img: PROP_IMGS[3] },
+    ];
+    return (
+      <div className="cp-preview">
+        <div style={{ display:"flex", alignItems:"center", gap:10, background:"rgba(255,255,255,0.07)", border:"1px solid rgba(255,255,255,0.09)", borderRadius:10, padding:"10px 14px", marginBottom:12 }}>
+          <div style={{ width:52, height:36, borderRadius:6, backgroundImage:`url(${PROP_IMGS[0]})`, backgroundSize:"cover", backgroundPosition:"center", flexShrink:0 }}></div>
+          <div>
+            <div style={{ fontSize:13, fontWeight:700, color:"#fff" }}>7447 W Mercer Way</div>
+            <div style={{ fontSize:11.5, color:"#93a8c4", marginTop:1 }}>Mercer Island, WA · $3,690,000</div>
+          </div>
+        </div>
+        <div className="cp-assets-grid">
+          {assets.map((a, i) => (
+            <div key={i} className="cp-asset-card">
+              <div className="cp-asset-thumb" style={{ backgroundImage:`url(${a.img})` }}>
+                <div className="cp-asset-badge" style={a.style}>{a.platform}</div>
+              </div>
+              <div className="cp-asset-name">{a.name}</div>
+            </div>
+          ))}
+        </div>
+        <div style={{ display:"flex", gap:8, marginTop:12 }}>
+          {["Download all", "Open in Canva", "Re-share"].map((action, i) => (
+            <div key={i} style={{ flex:1, padding:"9px 8px", background:"rgba(255,255,255,0.07)", border:"1px solid rgba(255,255,255,0.09)", borderRadius:8, textAlign:"center", fontSize:11.5, color:"#93a8c4", fontWeight:500 }}>
+              {action}
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+  // invite
+  return (
+    <div className="cp-features">
+      {/* Free tier label */}
+      <div style={{ fontSize:10.5, fontWeight:700, color:"#6ee7b7", textTransform:"uppercase", letterSpacing:"0.07em", marginBottom:2 }}>What you get for free</div>
+
+      {[
+        { icon: "home",     bg: "rgba(16,185,129,0.15)", title: "Browse shared listings",   desc: "Browse listings REConnect Pro members share with you — view and download full property details, photos, and other assets." },
+        { icon: "showcase", bg: "rgba(37,99,235,0.15)",  title: "Access curated showcases", desc: "Explore hand-picked property collections and marketing showcases that you can view and download assets." },
+      ].map((f, i) => (
+        <div key={i} className="cp-feature">
+          <div className="cp-feature-icon" style={{ background: f.bg }}>
+            <SvgIcon path={ICON_PATHS[f.icon]} size={17} strokeWidth={1.7} />
+          </div>
+          <div>
+            <div className="cp-feature-title">{f.title}</div>
+            <div className="cp-feature-desc">{f.desc}</div>
+          </div>
+        </div>
+      ))}
+
+      {/* Pro upgrade */}
+      <div style={{ marginTop:4, borderTop:"1px solid rgba(255,255,255,0.08)", paddingTop:14 }}>
+        <div style={{ display:"inline-flex", alignItems:"center", gap:5, background:"rgba(196,181,253,0.15)", color:"#c4b5fd", fontSize:10, fontWeight:700, padding:"3px 10px", borderRadius:999, letterSpacing:"0.06em", textTransform:"uppercase", marginBottom:10 }}>
+          REConnect Pro
+        </div>
+        <div style={{ fontSize:13, fontWeight:700, color:"#fff", lineHeight:1.45, marginBottom:12 }}>
+          Upgrade to share your own listings and showcases, and build your network.
+        </div>
+        <a href="#" style={{ display:"inline-flex", alignItems:"center", gap:6, background:"linear-gradient(135deg, #7c3aed, #6d28d9)", color:"#fff", fontSize:12.5, fontWeight:700, padding:"9px 20px", borderRadius:999, textDecoration:"none", letterSpacing:"-0.01em", boxShadow:"0 4px 16px rgba(124,58,237,0.4)" }}>
+          Learn about REConnect Pro →
+        </a>
+      </div>
+    </div>
+  );
+};
+
+// Auth form
+const AuthForm = ({ scenario, tab, setTab }) => {
+  const [submitted, setSubmitted] = React.useState(false);
+  const [loading, setLoading]     = React.useState(false);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setTimeout(() => { setLoading(false); setSubmitted(true); }, 1400);
+    setTimeout(() => { window.location.href = scenario.dest; }, 3200);
+  };
+
+  if (submitted) {
+    return (
+      <div style={{ textAlign:"center", paddingTop:20 }}>
+        <div className="loading-bar"><div className="loading-fill"></div></div>
+        <div className="success-icon">
+          <SvgIcon path={ICON_PATHS.check} size={28} strokeWidth={2.5} />
+        </div>
+        <div className="success-title">{scenario.successTitle}</div>
+        <div className="success-sub">{scenario.successSub}</div>
+        <a href={scenario.dest} className="success-btn">Open REConnect →</a>
+      </div>
+    );
+  }
+
+  const isSignup = tab === "signup";
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <div className="auth-tabs">
+        <button type="button" className={`auth-tab ${tab === "signin" ? "active" : ""}`} onClick={() => setTab("signin")}>Sign in</button>
+        <button type="button" className={`auth-tab ${tab === "signup" ? "active" : ""}`} onClick={() => setTab("signup")}>Create account</button>
+      </div>
+
+      <div className="auth-headline">{isSignup ? "Create your free account" : "Welcome back"}</div>
+      <div className="auth-sub">{isSignup ? scenario.modeSub : "Sign in to view what's been shared with you."}</div>
+
+      {isSignup && (
+        <div className="field-row">
+          <div className="field" style={{ margin:0 }}>
+            <label>First name</label>
+            <input type="text" placeholder="Jordan" defaultValue="Jordan" required />
+          </div>
+          <div className="field" style={{ margin:0 }}>
+            <label>Last name</label>
+            <input type="text" placeholder="Park" defaultValue="Park" required />
+          </div>
+        </div>
+      )}
+
+      <div className="field" style={{ marginTop: isSignup ? 14 : 0 }}>
+        <label>Email address</label>
+        <input type="email" placeholder={scenario.emailPlaceholder} defaultValue={scenario.emailPlaceholder} required />
+      </div>
+
+      <div className="field">
+        <label style={{ display:"flex", alignItems:"center", justifyContent:"space-between" }}>
+          Password
+          {!isSignup && <a href="#" style={{ fontSize:11.5, fontWeight:500, color:"#2563EB" }}>Forgot password?</a>}
+        </label>
+        <input type="password" placeholder="••••••••" defaultValue="password123" required />
+      </div>
+
+      {isSignup && (
+        <div className="field">
+          <label>Brokerage <span style={{ fontWeight:400, color:"#94a3b8" }}>(optional)</span></label>
+          <input type="text" placeholder="e.g. Coldwell Banker, Windermere…" />
+        </div>
+      )}
+
+      <button className="submit-btn" type="submit" disabled={loading}>
+        {loading ? "Signing in…" : isSignup ? "Create account & continue →" : "Sign in & continue →"}
+      </button>
+
+      <div className="auth-divider">or</div>
+
+      <button type="button" className="google-btn">
+        <svg className="google-icon" viewBox="0 0 24 24">
+          <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+          <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+          <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+          <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+        </svg>
+        Continue with Google
+      </button>
+
+      <div className="auth-footer">
+        {isSignup
+          ? <>Already have an account? <a href="#" onClick={e => { e.preventDefault(); setTab("signin"); }}>Sign in</a></>
+          : <>New to REConnect? <a href="#" onClick={e => { e.preventDefault(); setTab("signup"); }}>Create a free account</a></>
+        }
+        <div style={{ marginTop:10 }}>
+          By continuing you agree to REConnect's <a href="#">Terms</a> &amp; <a href="#">Privacy Policy</a>
+        </div>
+      </div>
+    </form>
+  );
+};
+
+// Main App
+function AuthApp() {
+  const hash = window.location.hash.replace("#", "") || "invite";
+  const scenarioKey = ["invite","listings","showcase","assets"].includes(hash) ? hash : "invite";
+  const scenario = SCENARIOS[scenarioKey];
+  const [tab, setTab] = React.useState(scenario.mode);
+
+  return (
+    <div className="layout">
+      {/* Left: context */}
+      <div className="context-panel">
+        <div className="cp-logo">
+          <img src="uploads/Reconnect-Logo-V1.svg" alt="REConnect" style={{ filter:"brightness(0) invert(1)", width:168 }} />
+        </div>
+
+        <div className={`cp-badge cp-badge-${scenario.badge}`}>
+          <SvgIcon path={ICON_PATHS[scenario.badgeIcon]} size={13} strokeWidth={2} />
+          {scenario.badgeText}
+        </div>
+        <div className="cp-headline">{scenario.headline}</div>
+        <div className="cp-subline">{scenario.subline}</div>
+
+        {/* Sender */}
+        <div className="cp-sender">
+          <div className="cp-sender-ava" style={{ backgroundImage:"url(https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=120&auto=format)" }}></div>
+          <div>
+            <div className="cp-sender-name">Mike Anderson</div>
+            <div className="cp-sender-role">Realtor · Neutrino · Seattle, WA</div>
+          </div>
+          <div className="cp-sender-verb">
+            {scenarioKey === "invite" ? "Invited you" : "Shared with you"}
+          </div>
+        </div>
+
+        <ContextContent scenario={scenario} />
+
+        <div className="cp-testimonial">
+          <div className="cp-test-avas">
+            {[
+              "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=60&auto=format",
+              "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=60&auto=format",
+              "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=60&auto=format",
+              "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=60&auto=format",
+            ].map((src, i) => (
+              <div key={i} className="cp-test-ava" style={{ backgroundImage:`url(${src})` }}></div>
+            ))}
+          </div>
+          <div className="cp-test-text">
+            <strong>2,400+ agents</strong> across the globe
+          </div>
+        </div>
+      </div>
+
+      {/* Right: auth form */}
+      <div className="auth-panel">
+        <div className="auth-inner">
+          <div className="auth-logo">
+            <img src="uploads/Reconnect-Logo-V1.svg" alt="REConnect" style={{ width:160 }} />
+          </div>
+          <AuthForm scenario={scenario} tab={tab} setTab={setTab} />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<AuthApp />);
+</script>
+</body>
+</html>

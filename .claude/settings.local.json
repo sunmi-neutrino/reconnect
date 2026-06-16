@@ -1,0 +1,25 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__figma__use_figma",
+      "mcp__figma__generate_figma_design",
+      "Bash(open \"http://localhost:3400/ReConnect%20Base.html?page=amp-listing/L01#figmacapture=478fdcd0-5486-4897-9b93-8cc79044575e&figmaendpoint=https%3A%2F%2Fmcp.figma.com%2Fmcp%2Fcapture%2F478fdcd0-5486-4897-9b93-8cc79044575e%2Fsubmit&figmadelay=8000\")",
+      "Bash(open \"http://localhost:3400/ReConnect%20Base.html?page=showcases#figmacapture=87162da3-df48-42d9-980c-3bb4ffa90ee2&figmaendpoint=https%3A%2F%2Fmcp.figma.com%2Fmcp%2Fcapture%2F87162da3-df48-42d9-980c-3bb4ffa90ee2%2Fsubmit&figmadelay=8000\")",
+      "Bash(open \"http://localhost:3400/Reconnect%20Member.html#figmacapture=726abd5f-e5c3-465b-943a-4dc86622ff72&figmaendpoint=https%3A%2F%2Fmcp.figma.com%2Fmcp%2Fcapture%2F726abd5f-e5c3-465b-943a-4dc86622ff72%2Fsubmit&figmadelay=8000\")",
+      "mcp__figma__get_metadata",
+      "Skill(figma:figma-generate-design)",
+      "Skill(figma:figma-generate-design:*)",
+      "Skill(figma:figma-use)",
+      "Skill(figma:figma-use:*)",
+      "Bash(python3 -m http.server 8765)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:8765/)",
+      "WebFetch(domain:reconnect-base.netlify.app)",
+      "Bash(jq '.[0].text' /Users/sunmi/.claude/projects/-Users-sunmi-Claude-Reconnect-Base-Redesign/4ca56034-28a8-4b8c-b21d-d00ac5a08f62/tool-results/mcp-figma-get_metadata-1779305147198.txt > /tmp/metadata_text.txt && grep -o 'name=\"[^\"]*\" id=\"[^\"]*\"' /tmp/metadata_text.txt | grep -E '\\(FRAME|SECTION|COMPONENT|style\\)' | head -50)",
+      "Read(//private/tmp/**)",
+      "Bash(sed 's/>/>\\\\n/g' /tmp/metadata_text.txt | grep 'name=' | head -100)",
+      "Bash(npx http-server *)",
+      "Bash(curl -s http://localhost:3000/email-invitation.html)",
+      "Bash(cp /Users/sunmi/Downloads/Seaglass.png /Users/sunmi/Claude/Reconnect-Base-Redesign/uploads/Seaglass.png)"
+    ]
+  }
+}

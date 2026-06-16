@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Email Preview — Share Showcase</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: #DDE1E9; font-family: "Poppins", Arial, sans-serif; padding: 0 0 60px; }
+
+.preview-nav {
+  background: #0B1F3A; padding: 12px 24px;
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  position: sticky; top: 0; z-index: 100;
+}
+.preview-nav-label { font-size: 11px; font-weight: 700; color: #6b86ad; text-transform: uppercase; letter-spacing: 0.06em; margin-right: 4px; }
+.preview-nav a { font-size: 12px; font-weight: 500; color: #93c5fd; text-decoration: none; padding: 4px 12px; border-radius: 999px; border: 1px solid rgba(147,197,253,0.2); transition: all .15s; }
+.preview-nav a:hover { background: rgba(147,197,253,0.12); }
+.preview-nav a.active { background: #2563EB; color: #fff; border-color: #2563EB; }
+.preview-nav .sep { color: #6b86ad; font-size: 13px; margin: 0 4px; }
+.preview-nav .flow-link { color: #10B981; border-color: rgba(16,185,129,0.3); }
+.preview-nav .flow-link:hover { background: rgba(16,185,129,0.12); }
+
+.email-stage { max-width: 660px; margin: 32px auto 0; padding: 0 16px; }
+.email-window { background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 12px 48px rgba(0,0,0,0.2); }
+.email-chrome { background: #F8FAFC; border-bottom: 1px solid #E5E8EE; padding: 14px 20px; }
+.email-chrome-row { font-size: 13px; color: #1e293b; line-height: 1.8; }
+.email-chrome-row strong { font-weight: 600; color: #0F172A; }
+.email-body { background: #F6F7F9; }
+.email-header { background: #fff; border-bottom: 1px solid #E5E8EE; padding: 22px 48px; text-align: center; }
+.email-header img { width: 172px; height: auto; }
+.email-main { background: #fff; }
+.email-section { padding: 32px 48px; }
+.email-footer { background: #0B1F3A; padding: 24px 48px; text-align: center; }
+
+.sender-strip {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 20px; background: #F8FAFC;
+  border: 1px solid #E5E8EE; border-radius: 10px; margin-bottom: 22px;
+}
+.sender-ava { width: 44px; height: 44px; border-radius: 50%; background-size: cover; background-position: center; border: 2px solid #fff; box-shadow: 0 1px 4px rgba(0,0,0,0.1); flex-shrink: 0; }
+
+.quote-block { background: #EFF6FF; border-left: 3px solid #2563EB; border-radius: 0 10px 10px 0; padding: 14px 18px; margin-bottom: 24px; }
+.quote-label { font-size: 11.5px; font-weight: 700; color: #2563EB; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; }
+.quote-text { font-size: 13.5px; color: #1e293b; line-height: 1.7; font-style: italic; }
+
+.cta-btn { display: inline-block; background: #10B981; color: #fff; font-weight: 700; font-size: 15px; padding: 16px 48px; border-radius: 999px; text-decoration: none; letter-spacing: -0.01em; }
+
+/* Showcase hero */
+.showcase-hero {
+  position: relative; height: 240px; border-radius: 12px; overflow: hidden;
+  margin-bottom: 16px;
+}
+.showcase-hero-img { position: absolute; inset: 0; background-size: cover; background-position: center; }
+.showcase-hero-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(8,24,49,0.85) 0%, rgba(8,24,49,0.2) 60%, transparent 100%);
+}
+.showcase-hero-content { position: absolute; bottom: 0; left: 0; right: 0; padding: 20px 22px; }
+.showcase-hero-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: rgba(16,185,129,0.25); color: #6ee7b7;
+  font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 999px;
+  letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 8px;
+}
+.showcase-hero-title { font-size: 20px; font-weight: 700; color: #fff; letter-spacing: -0.02em; line-height: 1.3; margin-bottom: 4px; }
+.showcase-hero-desc { font-size: 12.5px; color: rgba(255,255,255,0.75); line-height: 1.5; }
+
+/* Thumb strip */
+.thumb-strip { display: flex; gap: 8px; margin-bottom: 16px; }
+.thumb-strip-item { flex: 1; height: 72px; border-radius: 8px; background-size: cover; background-position: center; }
+
+/* Stat row */
+.stat-row { display: flex; gap: 0; background: #F8FAFC; border: 1px solid #E5E8EE; border-radius: 10px; overflow: hidden; }
+.stat-item { flex: 1; padding: 14px 16px; text-align: center; }
+.stat-item + .stat-item { border-left: 1px solid #E5E8EE; }
+.stat-value { font-size: 22px; font-weight: 700; color: #0F172A; letter-spacing: -0.02em; }
+.stat-label { font-size: 11.5px; color: #64748B; margin-top: 2px; }
+</style>
+</head>
+<body>
+
+<nav class="preview-nav">
+  <span class="preview-nav-label">Email Previews:</span>
+  <a href="email-invitation.html">Invitation</a>
+  <a href="email-share-listings.html">Share Listings</a>
+  <a href="email-share-showcase.html" class="active">Share Showcase</a>
+  <a href="email-share-assets.html">Share Assets</a>
+  <a href="email-share-listings-assets.html">Listings + Assets</a>
+  <span class="sep">→</span>
+  <a href="auth-landing.html#showcase" class="flow-link">Auth Landing ↗</a>
+  <a href="Reconnect Member.html" class="flow-link">Member View ↗</a>
+</nav>
+
+<div class="email-stage">
+  <div class="email-window">
+
+    <div class="email-chrome">
+      <div class="email-chrome-row"><strong>From:</strong> Mike Anderson via REConnect &lt;notify@reconnect.app&gt;</div>
+      <div class="email-chrome-row"><strong>To:</strong> Sarah Chen &lt;sarah.chen@coldwellbanker.com&gt;</div>
+      <div class="email-chrome-row"><strong>Subject:</strong> Mike Anderson shared a showcase with you — "Mercer Island Luxury Collection"</div>
+    </div>
+
+    <div class="email-body">
+
+      <div class="email-header">
+        <img src="uploads/Reconnect-Logo-V1.svg" alt="REConnect" />
+      </div>
+
+      <div class="email-main">
+        <div class="email-section">
+
+          <!-- Heading -->
+          <div style="text-align:center; margin-bottom:26px;">
+            <div style="display:inline-flex; align-items:center; gap:7px; background:#ECFDF5; color:#047857; font-size:12px; font-weight:700; padding:5px 14px; border-radius:999px; letter-spacing:0.04em; text-transform:uppercase; margin-bottom:14px;">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5h18v4H3zM3 11h8v10H3zM13 11h8v10h-8z"/></svg>
+              Showcase shared with you
+            </div>
+            <h1 style="font-size:23px; font-weight:700; color:#0F172A; letter-spacing:-0.02em; line-height:1.3; margin:0 0 10px;">
+              Mike Anderson shared a<br>showcase with you
+            </h1>
+            <p style="font-size:13.5px; color:#64748B; line-height:1.7; margin:0 auto; max-width:420px;">
+              A curated collection of listings and marketing materials — ready to explore on REConnect.
+            </p>
+          </div>
+
+          <!-- Sender -->
+          <div class="sender-strip">
+            <div class="sender-ava" style="background-image:url(https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=120&auto=format)"></div>
+            <div>
+              <div style="font-size:13.5px; font-weight:700; color:#0F172A;">Mike Anderson</div>
+              <div style="font-size:12px; color:#64748B; margin-top:1px;">Realtor · Neutrino &nbsp;·&nbsp; Seattle, WA</div>
+            </div>
+            <div style="margin-left:auto; text-align:right;">
+              <div style="font-size:11px; font-weight:700; color:#10B981; text-transform:uppercase; letter-spacing:0.05em;">Shared with you</div>
+              <div style="font-size:11.5px; color:#64748B; margin-top:1px;">Just now</div>
+            </div>
+          </div>
+
+          <!-- Personal note -->
+          <div class="quote-block">
+            <div class="quote-label">Note from Mike</div>
+            <div class="quote-text">"Sarah — take a look at my Mercer Island collection. These are some of our strongest properties right now and would pair well with your coastal retreat listings. — Mike"</div>
+          </div>
+
+        </div>
+
+        <!-- Showcase preview -->
+        <div class="email-section" style="background:#F8FAFC; padding-top:24px; padding-bottom:24px;">
+          <div style="font-size:12px; font-weight:700; color:#64748B; text-transform:uppercase; letter-spacing:0.06em; margin-bottom:14px;">Shared showcase</div>
+
+          <!-- Hero card -->
+          <div style="border:1px solid #E5E8EE; border-radius:14px; overflow:hidden; background:#fff;">
+            <div class="showcase-hero">
+              <div class="showcase-hero-img" style="background-image:url(https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=800&auto=format)"></div>
+              <div class="showcase-hero-overlay"></div>
+              <div class="showcase-hero-content">
+                <div class="showcase-hero-badge">● Published</div>
+                <div class="showcase-hero-title">Mercer Island Luxury Collection</div>
+                <div class="showcase-hero-desc">High-end waterfront and view properties on Mercer Island — curated for discerning buyers.</div>
+              </div>
+            </div>
+
+            <!-- Thumbnail strip -->
+            <div style="padding:14px 16px;">
+              <div class="thumb-strip">
+                <div class="thumb-strip-item" style="background-image:url(https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=400&auto=format)"></div>
+                <div class="thumb-strip-item" style="background-image:url(https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=400&auto=format)"></div>
+                <div class="thumb-strip-item" style="background-image:url(https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=400&auto=format)"></div>
+                <div class="thumb-strip-item" style="display:flex; align-items:center; justify-content:center; background:#F1F5F9; border-radius:8px;">
+                  <div style="font-size:13px; font-weight:700; color:#64748B;">+3</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CTA -->
+        <div class="email-section" style="text-align:center; padding-top:32px; padding-bottom:36px;">
+          <a href="auth-landing.html#showcase" class="cta-btn">View Showcase on REConnect →</a>
+          <div style="margin-top:12px; font-size:12px; color:#94a3b8;">Sign in or create your free account to view all details</div>
+
+          <!-- Secondary info -->
+          <div style="margin-top:28px; padding:16px 20px; background:#F8FAFC; border:1px solid #E5E8EE; border-radius:10px; text-align:left;">
+            <div style="font-size:12px; font-weight:700; color:#64748B; text-transform:uppercase; letter-spacing:0.06em; margin-bottom:10px;">What's inside</div>
+            <div style="display:flex; flex-direction:column; gap:8px;">
+              <div style="display:flex; align-items:center; gap:10px; font-size:13px; color:#1e293b;">
+                <span style="width:20px; height:20px; border-radius:50%; background:#ECFDF5; color:#10B981; display:flex; align-items:center; justify-content:center; flex-shrink:0;"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>
+                6 curated property listings with full details
+              </div>
+              <div style="display:flex; align-items:center; gap:10px; font-size:13px; color:#1e293b;">
+                <span style="width:20px; height:20px; border-radius:50%; background:#ECFDF5; color:#10B981; display:flex; align-items:center; justify-content:center; flex-shrink:0;"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>
+                Marketing materials &amp; assets included
+              </div>
+              <div style="display:flex; align-items:center; gap:10px; font-size:13px; color:#1e293b;">
+                <span style="width:20px; height:20px; border-radius:50%; background:#ECFDF5; color:#10B981; display:flex; align-items:center; justify-content:center; flex-shrink:0;"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"/></svg></span>
+                High-resolution photos &amp; virtual tours
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="email-footer">
+        <div style="margin-bottom:10px;">
+          <img src="uploads/Reconnect-Logo-V1.svg" alt="REConnect" style="width:130px; filter:brightness(0) invert(1); opacity:0.65;" />
+        </div>
+        <div style="font-size:12px; color:#6b86ad; line-height:1.8;">
+          Mike Anderson shared this showcase with you on REConnect.<br>
+          Questions? Reply to this email or contact <a href="#" style="color:#93c5fd;">support@reconnect.app</a>
+        </div>
+        <div style="margin-top:14px; font-size:11.5px; color:#4a6080;">
+          © 2026 REConnect · Neutrino, Inc. · Seattle, WA &nbsp;·&nbsp;
+          <a href="#" style="color:#4a6080;">Unsubscribe</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

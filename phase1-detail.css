@@ -1,0 +1,430 @@
+/* Phase1-only Listing Detail overrides — loaded only by Reconnect Phase1.html */
+
+/* ==============================
+   Phase1 Dashboard
+   ============================== */
+
+.dash-page-h { margin-bottom: 24px; }
+
+/* Single 4-module grid */
+.dash-grid {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 18px;
+  margin-bottom: 18px;
+  align-items: stretch;
+}
+
+.dash-promo-card {
+  border-radius: var(--r-lg);
+  padding: 32px 32px 28px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Property Websites card */
+.dash-promo-websites {
+  background: linear-gradient(150deg, #F0F7FF 0%, #E0EDFF 60%, #D6E6FF 100%);
+  border: 1px solid rgba(0,0,0,0.06);
+  box-shadow: 0 2px 20px rgba(59,130,246,0.12);
+  flex-direction: row;
+  align-items: center;
+  gap: 24px;
+  padding: 32px 28px;
+}
+
+/* Desktop: content left, image right */
+.dash-promo-websites .dash-promo-content { flex: 1; min-width: 0; order: 1; }
+.dash-promo-websites .dash-device-wrap { order: 2; }
+
+.dash-promo-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--ink);
+  margin: 0 0 10px;
+  letter-spacing: -0.02em;
+}
+
+.dash-promo-desc {
+  font-size: 13.5px;
+  color: var(--ink-2);
+  line-height: 1.55;
+  margin: 0 0 14px;
+}
+
+.dash-sites-ready {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--green-600);
+  margin-bottom: 20px;
+}
+
+.dash-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--green-500);
+  flex-shrink: 0;
+}
+/* Hard-coded green so it's not overridden by primaryColor tweak */
+.dash-live-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #10B981;
+  flex-shrink: 0;
+}
+
+/* Animated pulsing dot for "X listing sites ready to activate" */
+.dash-sites-ready .dash-dot {
+  background: #10B981;
+  position: relative;
+}
+.dash-sites-ready .dash-dot::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: #10B981;
+  animation: dash-ping 1.6s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+@keyframes dash-ping {
+  0%   { transform: scale(1); opacity: 0.8; }
+  75%, 100% { transform: scale(2.4); opacity: 0; }
+}
+
+.dash-promo-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--blue-500);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 10px 22px;
+  border-radius: var(--r-pill);
+  transition: background .15s;
+}
+.dash-promo-btn:hover { background: var(--blue-600); }
+
+/* SWL device graphic */
+.dash-device-wrap {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.dash-swl-graphic {
+  width: 300px;
+  height: auto;
+  object-fit: contain;
+  display: block;
+  filter: drop-shadow(0 8px 24px rgba(0,0,0,0.12));
+}
+
+/* Canva card */
+.dash-promo-canva {
+  background: linear-gradient(150deg, #F5F2FF 0%, #EBE5FF 60%, #E0D8FF 100%);
+  border: 1px solid rgba(0,0,0,0.06);
+  box-shadow: 0 2px 20px rgba(109,40,217,0.12);
+  justify-content: flex-start;
+}
+
+.dash-canva-logo {
+  margin-bottom: 16px;
+}
+.dash-canva-logo-img {
+  width: 48px;
+  height: 48px;
+  display: block;
+}
+
+.dash-canva-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.dash-canva-btn-outline {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  width: 100%;
+  padding: 10px 16px;
+  border-radius: var(--r-pill);
+  border: 1.5px solid #7C3AED;
+  color: #7C3AED;
+  font-size: 14px;
+  font-weight: 600;
+  background: rgba(255,255,255,0.7);
+  transition: background .15s;
+}
+.dash-canva-btn-outline:hover { background: rgba(124,58,237,0.06); }
+
+.dash-canva-btn-filled {
+  display: block;
+  width: 100%;
+  padding: 10px 16px;
+  border-radius: var(--r-pill);
+  background: #7C3AED;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  transition: background .15s;
+  text-align: center;
+}
+.dash-canva-btn-filled:hover { background: #6D28D9; }
+
+/* (bottom-row removed — all 4 modules now in .dash-grid) */
+
+/* Free property website card */
+.dash-free-website { padding: 0; overflow: hidden; }
+
+.dash-free-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border-2);
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.dash-free-title-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.dash-free-title {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0;
+  color: rgb(238, 109, 104);
+}
+
+.dash-plan-badge {
+  background: #DCFCE7;
+  color: #15803D;
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 3px 9px;
+  border-radius: var(--r-pill);
+}
+
+.dash-free-listing {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 24px;
+}
+
+.dash-free-listing-thumb {
+  width: 80px;
+  height: 60px;
+  border-radius: 0;
+  background-size: cover;
+  background-position: center;
+  flex-shrink: 0;
+}
+
+.dash-free-listing-info { flex: 1; min-width: 0; }
+
+.dash-free-address {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 2px;
+}
+
+.dash-free-domain {
+  font-size: 13px;
+  margin-bottom: 6px;
+}
+
+.dash-site-live-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  font-weight: 500;
+  background: #ECFDF5;
+  color: var(--green-700);
+  padding: 3px 10px;
+  border-radius: var(--r-pill);
+  border: 1px solid #A7F3D0;
+}
+
+.dash-custom-domain {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 20px;
+  background: var(--blue-50);
+  border: 1px solid #DBEAFE;
+  border-radius: var(--r-md);
+  margin: 0 20px 20px;
+}
+
+.dash-custom-domain-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 3px;
+}
+.dash-custom-domain-desc {
+  font-size: 12.5px;
+  color: var(--muted);
+}
+
+/* Stats card */
+.dash-stats-card { padding: 20px; align-self: start; }
+
+.dash-stats-header { margin-bottom: 18px; }
+.dash-stats-title {
+  font-size: 20px;
+  font-weight: 700;
+  margin: 0 0 2px;
+  color: var(--ink);
+}
+.dash-stats-period { font-size: 13px; color: var(--muted); }
+
+.dash-stats-list { display: flex; flex-direction: column; gap: 20px; }
+
+.dash-stat-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.dash-stat-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.dash-stat-icon.blue { background: #EFF6FF; color: var(--blue-500); }
+.dash-stat-icon.blue-light { background: #F0F9FF; color: #0EA5E9; }
+
+.dash-stat-value {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1;
+  margin-bottom: 2px;
+}
+.dash-stat-label {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--ink-2);
+}
+.dash-stat-meta {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 1px;
+}
+
+/* ── ≤1280px: Property Websites card stacks image-on-top ── */
+@media (max-width: 1280px) {
+  .dash-promo-websites {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 0;
+    overflow: hidden;
+  }
+  .dash-promo-websites .dash-device-wrap {
+    order: 1;
+    width: 100%;
+    justify-content: center;
+    background: none;
+    padding: 28px 20px 0;
+  }
+  .dash-promo-websites .dash-promo-content {
+    order: 2;
+    padding: 10px 24px 28px;
+  }
+  .dash-swl-graphic { width: 260px; }
+}
+
+/* ── 1025–1280px: mobile card style in 2-col grid ── */
+@media (min-width: 1025px) and (max-width: 1280px) {
+  .dash-grid { grid-template-columns: 2fr 1fr; }
+}
+
+/* ── ≤1024px: single column, mobile order ── */
+@media (max-width: 1024px) {
+  .dash-grid { grid-template-columns: 1fr; }
+
+  /* Reorder: PW → Free Website → Canva → Stats */
+  .dash-order-1 { order: 1; }
+  .dash-order-2 { order: 2; }
+  .dash-order-3 { order: 3; }
+  .dash-order-4 { order: 4; }
+
+  /* Canva buttons — equal width side by side */
+  .dash-canva-actions { flex-direction: row; flex-wrap: wrap; gap: 10px; }
+  .dash-canva-btn-outline,
+  .dash-canva-btn-filled {
+    width: auto !important;
+    display: inline-flex;
+    min-width: 0;
+    white-space: nowrap;
+    justify-content: center;
+  }
+  .dash-canva-btn-outline { flex: 0 1 auto; font-size: 13px; padding: 8px 14px; }
+  .dash-canva-btn-filled  { flex: 0 1 auto; }
+}
+
+@media (max-width: 768px) {
+  .dash-free-title-row { flex-direction: column; align-items: flex-start; gap: 6px; }
+  .dash-free-listing { flex-wrap: wrap; }
+  .dash-custom-domain { flex-wrap: wrap; }
+  .dash-swl-graphic { width: 220px; }
+  .dash-page-h h1 { font-size: 20px; }
+
+  /* Activation banner full width on mobile (nav is hidden) */
+  .activation-banner { width: 100vw !important; }
+}
+
+
+.phase1-listing-detail .listing-detail-wrap {
+  display: flex; gap: 20px; align-items: stretch; margin-bottom: 16px;
+}
+.phase1-listing-detail .listing-detail-left {
+  flex: 1; min-width: 0; display: flex; flex-direction: column;
+}
+.phase1-listing-detail .listing-detail-left .sdhdr-main { flex: 1; }
+.phase1-listing-detail .listing-detail-right {
+  width: 280px; flex-shrink: 0; display: flex; flex-direction: column;
+}
+.phase1-listing-detail .listing-detail-right .promo-hero {
+  flex: 1; margin-bottom: 0; padding: 22px 24px;
+}
+.phase1-listing-detail .listing-detail-right .promo-hero-graphic { display: none !important; }
+.phase1-listing-detail .listing-promo-mobile { display: none; }
+
+@media (min-width: 1280px) {
+  .phase1-listing-detail .listing-detail-right { width: 320px; }
+}
+
+@media (min-width: 1366px) {
+  .phase1-listing-detail .sdhdr-main { align-items: center; gap: 28px; }
+}
+
+@media (max-width: 1024px) {
+  .phase1-listing-detail .listing-detail-wrap { flex-direction: column; }
+  .phase1-listing-detail .listing-detail-right { display: none; }
+  .phase1-listing-detail .listing-promo-mobile { display: block; }
+}

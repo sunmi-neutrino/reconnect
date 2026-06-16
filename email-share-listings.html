@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Email Preview — Share Listings</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: #DDE1E9; font-family: "Poppins", Arial, sans-serif; padding: 0 0 60px; }
+
+.preview-nav {
+  background: #0B1F3A; padding: 12px 24px;
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  position: sticky; top: 0; z-index: 100;
+}
+.preview-nav-label { font-size: 11px; font-weight: 700; color: #6b86ad; text-transform: uppercase; letter-spacing: 0.06em; margin-right: 4px; }
+.preview-nav a { font-size: 12px; font-weight: 500; color: #93c5fd; text-decoration: none; padding: 4px 12px; border-radius: 999px; border: 1px solid rgba(147,197,253,0.2); transition: all .15s; }
+.preview-nav a:hover { background: rgba(147,197,253,0.12); }
+.preview-nav a.active { background: #2563EB; color: #fff; border-color: #2563EB; }
+.preview-nav .sep { color: #6b86ad; font-size: 13px; margin: 0 4px; }
+.preview-nav .flow-link { color: #10B981; border-color: rgba(16,185,129,0.3); }
+.preview-nav .flow-link:hover { background: rgba(16,185,129,0.12); }
+
+.email-stage { max-width: 660px; margin: 32px auto 0; padding: 0 16px; }
+.email-window { background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 12px 48px rgba(0,0,0,0.2); }
+.email-chrome { background: #F8FAFC; border-bottom: 1px solid #E5E8EE; padding: 14px 20px; }
+.email-chrome-row { font-size: 13px; color: #1e293b; line-height: 1.8; }
+.email-chrome-row strong { font-weight: 600; color: #0F172A; }
+.email-body { background: #F6F7F9; }
+.email-header { background: #fff; border-bottom: 1px solid #E5E8EE; padding: 22px 48px; text-align: center; }
+.email-header img { width: 172px; height: auto; }
+.email-main { background: #fff; }
+.email-section { padding: 32px 48px; }
+.email-footer { background: #0B1F3A; padding: 24px 48px; text-align: center; }
+
+/* Sender strip */
+.sender-strip {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 20px; background: #F8FAFC;
+  border: 1px solid #E5E8EE; border-radius: 10px;
+  margin-bottom: 22px;
+}
+.sender-ava {
+  width: 44px; height: 44px; border-radius: 50%;
+  background-size: cover; background-position: center;
+  border: 2px solid #fff; box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+  flex-shrink: 0;
+}
+.sender-name { font-size: 13.5px; font-weight: 700; color: #0F172A; }
+.sender-meta { font-size: 12px; color: #64748B; margin-top: 1px; }
+
+/* Listing card */
+.listing-card {
+  border: 1px solid #E5E8EE; border-radius: 12px; overflow: hidden;
+  margin-bottom: 12px;
+  background: #fff;
+}
+.listing-card:last-child { margin-bottom: 0; }
+.listing-photo {
+  width: 100%; height: 200px;
+  background-size: cover; background-position: center;
+}
+.listing-body { padding: 16px 20px; }
+.listing-pills { display: flex; gap: 6px; margin-bottom: 10px; }
+.pill {
+  display: inline-flex; align-items: center;
+  font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 999px;
+}
+.pill-green { background: #ECFDF5; color: #047857; }
+.pill-blue { background: #EFF6FF; color: #1d4ed8; }
+.pill-gray { background: #F1F5F9; color: #64748B; }
+.listing-address { font-size: 16px; font-weight: 700; color: #0F172A; margin-bottom: 2px; }
+.listing-city { font-size: 12.5px; color: #64748B; margin-bottom: 12px; }
+.listing-stats {
+  display: flex; align-items: center; gap: 16px;
+  padding-top: 12px; border-top: 1px solid #F0F2F5;
+}
+.listing-price { font-size: 18px; font-weight: 700; color: #0F172A; letter-spacing: -0.02em; }
+.listing-detail { font-size: 12px; color: #64748B; }
+.listing-detail span { margin-right: 10px; }
+
+/* Quote */
+.quote-block { background: #EFF6FF; border-left: 3px solid #2563EB; border-radius: 0 10px 10px 0; padding: 14px 18px; margin-bottom: 24px; }
+.quote-label { font-size: 11.5px; font-weight: 700; color: #2563EB; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; }
+.quote-text { font-size: 13.5px; color: #1e293b; line-height: 1.7; font-style: italic; }
+
+/* CTA */
+.cta-btn {
+  display: inline-block; background: #10B981; color: #fff; font-weight: 700;
+  font-size: 15px; padding: 16px 48px; border-radius: 999px;
+  text-decoration: none; letter-spacing: -0.01em;
+}
+</style>
+</head>
+<body>
+
+<nav class="preview-nav">
+  <span class="preview-nav-label">Email Previews:</span>
+  <a href="email-invitation.html">Invitation</a>
+  <a href="email-share-listings.html" class="active">Share Listings</a>
+  <a href="email-share-showcase.html">Share Showcase</a>
+  <a href="email-share-assets.html">Share Assets</a>
+  <a href="email-share-listings-assets.html">Listings + Assets</a>
+  <span class="sep">→</span>
+  <a href="auth-landing.html#listings" class="flow-link">Auth Landing ↗</a>
+  <a href="Reconnect Member.html" class="flow-link">Member View ↗</a>
+</nav>
+
+<div class="email-stage">
+  <div class="email-window">
+
+    <div class="email-chrome">
+      <div class="email-chrome-row"><strong>From:</strong> Mike Anderson via REConnect &lt;notify@reconnect.app&gt;</div>
+      <div class="email-chrome-row"><strong>To:</strong> Sarah Chen &lt;sarah.chen@coldwellbanker.com&gt;</div>
+      <div class="email-chrome-row"><strong>Subject:</strong> Mike Anderson shared 2 listings with you on REConnect</div>
+    </div>
+
+    <div class="email-body">
+
+      <div class="email-header">
+        <img src="uploads/Reconnect-Logo-V1.svg" alt="REConnect" />
+      </div>
+
+      <div class="email-main">
+        <div class="email-section">
+
+          <!-- Heading -->
+          <div style="text-align:center; margin-bottom:26px;">
+            <div style="display:inline-flex; align-items:center; gap:7px; background:#EFF6FF; color:#1d4ed8; font-size:12px; font-weight:700; padding:5px 14px; border-radius:999px; letter-spacing:0.04em; text-transform:uppercase; margin-bottom:14px;">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8v10a2 2 0 0 1-2 2h-4v-7H9v7H5a2 2 0 0 1-2-2V11z"/></svg>
+              New listings shared with you
+            </div>
+            <h1 style="font-size:23px; font-weight:700; color:#0F172A; letter-spacing:-0.02em; line-height:1.3; margin:0 0 10px;">
+              Mike Anderson shared<br>2 listings with you
+            </h1>
+            <p style="font-size:13.5px; color:#64748B; line-height:1.7; margin:0 auto; max-width:420px;">
+              View the full listings on REConnect — with photos, property details, and marketing materials.
+            </p>
+          </div>
+
+          <!-- Sender -->
+          <div class="sender-strip">
+            <div class="sender-ava" style="background-image:url(https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=120&auto=format)"></div>
+            <div>
+              <div class="sender-name">Mike Anderson</div>
+              <div class="sender-meta">Realtor · Neutrino &nbsp;·&nbsp; Seattle, WA</div>
+            </div>
+            <div style="margin-left:auto; text-align:right;">
+              <div style="font-size:11px; font-weight:700; color:#10B981; text-transform:uppercase; letter-spacing:0.05em;">Shared with you</div>
+              <div style="font-size:11.5px; color:#64748B; margin-top:1px;">Just now</div>
+            </div>
+          </div>
+
+          <!-- Personal note -->
+          <div class="quote-block">
+            <div class="quote-label">Note from Mike</div>
+            <div class="quote-text">"Sarah — sharing these two Mercer Island and Bothell listings for our co-marketing in May. Would love to collaborate on open houses. — Mike"</div>
+          </div>
+
+        </div>
+
+        <!-- Listings -->
+        <div class="email-section" style="background:#F8FAFC; padding-top:24px; padding-bottom:24px;">
+          <div style="font-size:12px; font-weight:700; color:#64748B; text-transform:uppercase; letter-spacing:0.06em; margin-bottom:16px;">Shared listings</div>
+
+          <!-- Listing 1 -->
+          <div class="listing-card">
+            <div class="listing-photo" style="background-image:url(https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=800&auto=format)"></div>
+            <div class="listing-body">
+              <div class="listing-address">7447 W Mercer Way</div>
+              <div class="listing-city">Mercer Island, WA 98040 · MLS# 2516113</div>
+              <div class="listing-stats">
+                <div>
+                  <div class="listing-price">$3,690,000</div>
+                  <div class="listing-detail">
+                    <span>5 bd</span><span>4.5 ba</span><span>4,820 sqft</span>
+                  </div>
+                </div>
+                <div style="margin-left:auto;">
+                  <div style="font-size:12px; color:#64748B;">39 photos</div>
+                </div>
+              </div>
+              <div class="listing-pills" style="margin-top:10px; margin-bottom:0;">
+                <span class="pill pill-green">Active</span>
+                <span class="pill pill-gray">Residential</span>
+                <span class="pill pill-blue">Representing Seller</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Listing 2 -->
+          <div class="listing-card">
+            <div class="listing-photo" style="background-image:url(https://images.unsplash.com/photo-1605276374104-dee2a0ed3cd6?w=800&auto=format)"></div>
+            <div class="listing-body">
+              <div class="listing-address">3208 175th Street SE</div>
+              <div class="listing-city">Bothell, WA 98012 · MLS# 2518679</div>
+              <div class="listing-stats">
+                <div>
+                  <div class="listing-price">$1,449,950</div>
+                  <div class="listing-detail">
+                    <span>4 bd</span><span>3 ba</span><span>3,120 sqft</span>
+                  </div>
+                </div>
+                <div style="margin-left:auto;">
+                  <div style="font-size:12px; color:#64748B;">34 photos</div>
+                </div>
+              </div>
+              <div class="listing-pills" style="margin-top:10px; margin-bottom:0;">
+                <span class="pill pill-green">Active</span>
+                <span class="pill pill-gray">Residential</span>
+                <span class="pill pill-blue">Representing Seller</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CTA -->
+        <div class="email-section" style="text-align:center; padding-top:32px; padding-bottom:36px;">
+          <a href="auth-landing.html#listings" class="cta-btn">View Listings on REConnect →</a>
+          <div style="margin-top:12px; font-size:12px; color:#94a3b8;">Sign in or create your free account to view all details</div>
+
+          <div style="margin-top:28px; padding-top:24px; border-top:1px solid #F0F2F5;">
+            <div style="font-size:12.5px; color:#64748B; margin-bottom:14px;">More from Mike on REConnect</div>
+            <div style="display:flex; justify-content:center; gap:24px;">
+              <div style="text-align:center;">
+                <div style="font-size:22px; font-weight:700; color:#0F172A;">6</div>
+                <div style="font-size:11.5px; color:#64748B;">Active listings</div>
+              </div>
+              <div style="width:1px; background:#E5E8EE;"></div>
+              <div style="text-align:center;">
+                <div style="font-size:22px; font-weight:700; color:#0F172A;">3</div>
+                <div style="font-size:11.5px; color:#64748B;">Showcases</div>
+              </div>
+              <div style="width:1px; background:#E5E8EE;"></div>
+              <div style="text-align:center;">
+                <div style="font-size:22px; font-weight:700; color:#0F172A;">24</div>
+                <div style="font-size:11.5px; color:#64748B;">Network agents</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="email-footer">
+        <div style="margin-bottom:10px;">
+          <img src="uploads/Reconnect-Logo-V1.svg" alt="REConnect" style="width:130px; filter:brightness(0) invert(1); opacity:0.65;" />
+        </div>
+        <div style="font-size:12px; color:#6b86ad; line-height:1.8;">
+          Mike Anderson shared these listings with you on REConnect.<br>
+          Questions? Reply to this email or contact <a href="#" style="color:#93c5fd;">support@reconnect.app</a>
+        </div>
+        <div style="margin-top:14px; font-size:11.5px; color:#4a6080;">
+          © 2026 REConnect · Neutrino, Inc. · Seattle, WA &nbsp;·&nbsp;
+          <a href="#" style="color:#4a6080;">Unsubscribe</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

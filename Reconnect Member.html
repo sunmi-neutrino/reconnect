@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>REConnect — Member View</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css" />
+<script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+<style>
+/* ── Member-specific overrides ──────────────────────────────────────── */
+
+/* Locked nav items */
+.nav-locked { opacity: 0.6; }
+.nav-locked:hover { opacity: 1; }
+.nav-locked.active { opacity: 1; }
+.lock-badge {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 20px; height: 20px;
+  border-radius: 6px;
+  background: rgba(255,255,255,0.08);
+  color: var(--navy-300);
+  margin-left: auto;
+}
+.nav-locked.active .lock-badge { background: rgba(37,99,235,0.3); color: #93c5fd; }
+
+/* Member upgrade button in sidebar */
+.member-upgrade-btn {
+  display: flex; align-items: center; gap: 7px;
+  width: 100%; margin-top: 10px;
+  background: var(--green-500);
+  color: #fff; font-weight: 600; font-size: 12.5px;
+  padding: 9px 12px; border-radius: 999px;
+  justify-content: center;
+  transition: background .15s;
+}
+.member-upgrade-btn:hover { background: var(--green-600); }
+
+/* Welcome banner */
+.member-welcome {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: 22px 24px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 6px;
+  flex-wrap: wrap;
+}
+.member-welcome-left {
+  display: flex; align-items: center; gap: 14px;
+  min-width: 200px;
+  padding-right: 24px;
+  border-right: 1px solid var(--border);
+}
+.member-welcome-avatar {
+  width: 52px; height: 52px; border-radius: 50%;
+  background-size: cover; background-position: center;
+  border: 2px solid var(--border);
+  flex: none;
+}
+.member-welcome-eyebrow { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+.member-welcome-name { font-weight: 700; font-size: 15px; margin-top: 2px; }
+.member-welcome-role { font-size: 12px; color: var(--muted); }
+.member-welcome-body { flex: 1; min-width: 200px; }
+.member-welcome-body h2 { margin: 0 0 6px; font-size: 20px; font-weight: 700; letter-spacing: -0.01em; }
+.member-welcome-body p { margin: 0; color: var(--muted); font-size: 13.5px; line-height: 1.6; }
+.member-welcome-stats {
+  display: flex; align-items: center; gap: 0;
+  background: var(--canvas);
+  border-radius: var(--r-md);
+  padding: 12px 20px;
+  border: 1px solid var(--border);
+}
+.mws { text-align: center; padding: 0 18px; }
+.mws-value { font-size: 28px; font-weight: 700; letter-spacing: -0.02em; color: var(--ink); }
+.mws-label { font-size: 11.5px; color: var(--muted); font-weight: 500; margin-top: 2px; }
+.mws-div { width: 1px; height: 40px; background: var(--border); }
+
+/* Pro badge in page header */
+.member-pro-badge {
+  display: flex; align-items: center; gap: 10px;
+  background: var(--blue-50);
+  border: 1px solid #bfdbfe;
+  border-radius: var(--r-md);
+  padding: 8px 14px;
+  font-size: 12.5px; color: var(--blue-600);
+  font-weight: 500;
+}
+
+/* Locked page */
+.locked-page {
+  position: relative;
+  min-height: calc(100vh - 64px - 56px);
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
+  border-radius: var(--r-lg);
+  margin: -4px -4px;
+}
+.locked-bg {
+  position: absolute; inset: 0;
+  background-size: cover; background-position: center;
+  filter: blur(3px) brightness(0.35);
+  transform: scale(1.05);
+  z-index: 0;
+}
+.locked-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(8,24,49,0.65) 0%, rgba(8,24,49,0.5) 100%);
+  z-index: 1;
+}
+.locked-card {
+  position: relative; z-index: 2;
+  background: #fff;
+  border-radius: var(--r-lg);
+  padding: 36px 40px;
+  width: min(540px, calc(100vw - 48px));
+  box-shadow: var(--shadow-lg);
+  text-align: center;
+}
+.locked-icon-wrap {
+  width: 60px; height: 60px; border-radius: 16px;
+  background: var(--green-50); color: var(--green-700);
+  display: grid; place-items: center;
+  margin: 0 auto 14px;
+}
+.locked-pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--canvas); color: var(--muted);
+  border: 1px solid var(--border);
+  padding: 4px 12px; border-radius: 999px;
+  font-size: 12px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.06em;
+  margin-bottom: 16px;
+}
+.locked-headline {
+  font-size: 22px; font-weight: 700; letter-spacing: -0.015em;
+  margin: 0 0 10px; line-height: 1.3;
+}
+.locked-desc {
+  color: var(--muted); font-size: 13.5px; line-height: 1.7;
+  margin: 0 0 20px;
+}
+.locked-features {
+  list-style: none; margin: 0 0 24px; padding: 0;
+  text-align: left;
+  display: flex; flex-direction: column; gap: 8px;
+}
+.locked-features li {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 13.5px; color: var(--ink-2);
+}
+.lf-check {
+  width: 20px; height: 20px; border-radius: 50%;
+  background: var(--green-50); color: var(--green-700);
+  display: grid; place-items: center; flex: none;
+}
+.locked-actions {
+  display: flex; gap: 10px; margin-bottom: 20px; align-items: stretch;
+}
+.locked-actions .btn { flex: 1; justify-content: center; }
+.locked-social-proof {
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  font-size: 12.5px; color: var(--muted);
+}
+.lsp-avas { display: flex; }
+.lsp-ava {
+  width: 26px; height: 26px; border-radius: 50%;
+  background-size: cover; background-position: center;
+  border: 2px solid #fff; margin-left: -7px;
+}
+.lsp-avas .lsp-ava:first-child { margin-left: 0; }
+
+/* Upgrade banner */
+.member-upgrade-banner {
+  background: linear-gradient(135deg, var(--navy-800) 0%, var(--navy-700) 100%);
+  border-radius: var(--r-lg);
+  padding: 24px 28px;
+  display: flex; align-items: center; gap: 24px;
+  flex-wrap: wrap;
+  color: #fff;
+}
+.mub-left { display: flex; align-items: center; gap: 16px; flex: 1; min-width: 220px; }
+.mub-icon {
+  width: 48px; height: 48px; border-radius: 14px;
+  background: rgba(16,185,129,0.2);
+  display: grid; place-items: center;
+  color: var(--green-500); flex: none;
+}
+.mub-title { font-weight: 700; font-size: 16px; margin-bottom: 3px; }
+.mub-sub { font-size: 12.5px; color: var(--navy-300); }
+.mub-features {
+  display: flex; flex-wrap: wrap; gap: 8px;
+  flex: 1; min-width: 200px;
+}
+.mub-feat {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 12px; color: #93c5fd;
+  background: rgba(147,197,253,0.1);
+  padding: 4px 10px; border-radius: 999px;
+  font-weight: 500;
+}
+.mub-cta { white-space: nowrap; }
+
+/* Prevent "Shared by X" pill text from wrapping */
+.listing-meta .status .pill { white-space: nowrap; }
+/* Sub info should stay on one line */
+.listing-meta .sub { flex-wrap: nowrap; white-space: nowrap; }
+
+@media (max-width: 768px) {
+  .locked-actions { flex-direction: column; }
+  .locked-actions .btn { width: 100%; flex: none; min-height: 38px; }
+}
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script src="data.js"></script>
+<script type="text/babel" src="shell.jsx"></script>
+<script type="text/babel" src="listings.jsx"></script>
+<script type="text/babel" src="showcases.jsx"></script>
+<script type="text/babel" src="member-shell.jsx"></script>
+<script type="text/babel" src="member-pages.jsx"></script>
+
+<script type="text/babel" data-presets="react">
+
+function MemberApp() {
+  const [route, setRoute] = React.useState("member-dashboard");
+  const [collapsed, setCollapsed] = React.useState(false);
+  const [mobileNavOpen, setMobileNavOpen] = React.useState(false);
+  const [profileOpen, setProfileOpen] = React.useState(false);
+
+  React.useEffect(() => {
+    const onClick = (e) => {
+      if (!e.target.closest(".profile-menu") && !e.target.closest(".avatar")) setProfileOpen(false);
+    };
+    document.addEventListener("click", onClick);
+    return () => document.removeEventListener("click", onClick);
+  }, []);
+
+  const go = (r) => { setRoute(r); window.scrollTo(0, 0); };
+
+  // Breadcrumbs — {label, route} objects; route=null means current (non-clickable)
+  let crumbs = [{ label: "REConnect", route: "member-dashboard" }];
+  if (route === "member-dashboard")               crumbs.push({ label: "Dashboard", route: null });
+  else if (route === "member-listings")           crumbs.push({ label: "Shared Listings", route: null });
+  else if (route.startsWith("member-listing/"))  { crumbs.push({ label: "Shared Listings", route: "member-listings" }); crumbs.push({ label: "Detail", route: null }); }
+  else if (route === "member-spotlights")          crumbs.push({ label: "Shared Spotlights", route: null });
+  else if (route.startsWith("member-spotlight/")) { crumbs.push({ label: "Shared Spotlights", route: "member-spotlights" }); crumbs.push({ label: "Detail", route: null }); }
+  else if (route === "locked-company")            crumbs.push({ label: "Company Marketing", route: null });
+  else if (route === "locked-network")            crumbs.push({ label: "Network", route: null });
+  else if (route === "locked-canva")              crumbs.push({ label: "Canva", route: null });
+  else if (route === "upgrade")                   crumbs.push({ label: "Upgrade to Pro", route: null });
+
+  // Page routing
+  let page = null;
+  if (route === "member-dashboard")
+    page = <MemberDashboard go={go} />;
+  else if (route === "member-listings")
+    page = <MemberListings go={go} />;
+  else if (route.startsWith("member-listing/"))
+    page = <MemberListingDetail id={route.split("/")[1]} go={go} />;
+  else if (route === "member-spotlights")
+    page = <MemberSpotlights go={go} />;
+  else if (route.startsWith("member-spotlight/"))
+    page = <MemberSpotlightDetail id={route.split("/")[1]} go={go} />;
+  else if (route.startsWith("locked-") || route === "upgrade")
+    page = route === "upgrade" ? <UpgradePage /> : <LockedPage route={route} />;
+
+  return (
+    <div className={`app ${collapsed ? "collapsed" : ""} ${mobileNavOpen ? "mobile-nav-open" : ""}`}>
+      <div className="mobile-nav-overlay" onClick={() => setMobileNavOpen(false)} />
+      <MemberSidebar
+        route={route}
+        setRoute={go}
+        collapsed={collapsed}
+        setCollapsed={setCollapsed}
+        onMobileClose={() => setMobileNavOpen(false)}
+      />
+      <div>
+        <MemberTopBar
+          crumbs={crumbs}
+          go={go}
+          onProfileClick={(e) => { e.stopPropagation(); setProfileOpen(!profileOpen); }}
+          profileOpen={profileOpen}
+          onMenuChoose={() => setProfileOpen(false)}
+          onMobileMenuClick={() => setMobileNavOpen(!mobileNavOpen)}
+        />
+        <main className="main">{page}</main>
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<MemberApp />);
+</script>
+</body>
+</html>
