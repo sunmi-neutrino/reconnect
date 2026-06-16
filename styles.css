@@ -702,7 +702,7 @@ a:hover { text-decoration: underline; }
 .sdhdr-main {
   flex: 1; background: var(--surface); border: 1px solid var(--border);
   border-radius: var(--r-lg); box-shadow: var(--shadow-sm);
-  display: flex; padding: 20px 22px; gap: 18px; align-items: flex-start;
+  display: flex; padding: 20px 22px; gap: 18px; align-items: center; justify-content: center;
   overflow: hidden;
 }
 .sdhdr-thumb {
