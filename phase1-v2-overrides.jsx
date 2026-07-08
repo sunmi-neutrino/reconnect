@@ -165,9 +165,6 @@ const WelcomeFlow = ({ onClose }) => {
             </p>
           </div>
           <div className="ob-foot" style={{ justifyContent: "center" }}>
-            <button className="ob-btn-primary ob-btn-green" onClick={() => { window.open("https://www.canva.com/your-apps/AAGE_hOiH5U/reconnect", "_blank"); onClose(); }}>
-              <Icon name="external-link" size={16} /> Open app in Canva
-            </button>
             <button className="ob-btn-primary" onClick={onClose}>Explore REConnect</button>
           </div>
         </>}
