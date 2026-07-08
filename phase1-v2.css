@@ -1,0 +1,429 @@
+/* Phase1-V2-only overrides — loaded only by Reconnect Phase1-V2.html */
+
+/* ==============================
+   Dashboard grid — the 5 modules live in two independently-stacking
+   flex columns so left/right spacing never depends on the other
+   column's content height (fixes the Canva/Profile ↔ Stats gap).
+   ============================== */
+.dash-col-left,
+.dash-col-right {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  min-width: 0;
+}
+
+/* .dash-stats-card inherits align-self:start from the shared grid-context
+   rule in phase1-detail.css, which here (inside a column flex container)
+   would cross-axis shrink it instead of stretching it full width. */
+.dash-stats-card { align-self: stretch; }
+
+@media (max-width: 1024px) {
+  /* Flatten the column wrappers so the 5 modules become direct
+     .dash-grid children again, ordered via the existing dash-order-* classes. */
+  .dash-col-left,
+  .dash-col-right { display: contents; }
+
+  .dash-order-3 { order: 1; }
+  .dash-order-1 { order: 2; }
+  .dash-order-2 { order: 3; }
+  .dash-order-cp { order: 4; }
+  .dash-order-4 { order: 5; }
+}
+
+/* ==============================
+   Property Websites module (v2) — lighter blue-to-white gradient
+   ============================== */
+.dash-promo-websites-v2 {
+  background: linear-gradient(180deg, #E0ECFB 0%, #FFFFFF 100%);
+  border: 1px solid #DEE0E1;
+  box-shadow: none;
+}
+
+/* ==============================
+   Canva module (v2) — "Use in Canva"
+   ============================== */
+.dash-promo-canva-v2 {
+  background: linear-gradient(145deg, #ABEFC3 7%, #ECFDF5 54%, #FDFFFE 90%);
+  border: 1px solid #DADADA;
+  box-shadow: none;
+  padding: 33px 33px 29px;
+}
+
+.canva-v2-shot-wrap {
+  position: relative;
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.canva-v2-shot {
+  display: block;
+  width: 100%;
+  border-radius: 7px;
+}
+
+.canva-v2-badge {
+  position: absolute;
+  top: -14px;
+  right: -8px;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+/* Smaller, centered screenshot + centered content on mobile */
+@media (max-width: 768px) {
+  .dash-promo-canva-v2 { text-align: center; }
+  .canva-v2-shot-wrap { max-width: 260px; margin: 0 auto 10px; }
+  .canva-v2-badge { width: 38px; height: 38px; top: -10px; right: -6px; }
+  .canva-v2-open-btn {
+    width: auto;
+    display: inline-flex;
+    margin: 0 auto 10px;
+    padding: 13px 28px;
+  }
+}
+@media (max-width: 480px) {
+  .canva-v2-shot-wrap { max-width: 220px; }
+}
+
+.dash-promo-canva-v2 .dash-promo-title { font-size: 28px; margin-bottom: 8px; }
+.dash-promo-canva-v2 .dash-promo-desc { margin-bottom: 18px; }
+
+.canva-v2-open-btn {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  border: none;
+  overflow: hidden;
+  background: #10B981;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+  padding: 13px 16px;
+  border-radius: var(--r-pill);
+  box-shadow: 0 4px 8px rgba(104,113,238,0.32);
+  transition: background .15s, transform .15s ease, box-shadow .15s ease;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+.canva-v2-open-btn:hover {
+  background: #0DA271;
+  transform: scale(1.045);
+  box-shadow: 0 6px 14px rgba(104,113,238,0.4);
+}
+
+/* Slow, subtle rotating gradient border ring */
+.canva-v2-open-btn-spin {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 400px;
+  height: 400px;
+  background: conic-gradient(
+    from 0deg,
+    #ffffff 0deg,
+    #a3e400 120deg,
+    #00e99c 240deg,
+    #ffffff 360deg
+  );
+  transform: translate(-50%, -50%) rotate(0deg);
+  animation: canva-border-spin 9s linear infinite;
+  z-index: 0;
+  pointer-events: none;
+}
+.canva-v2-open-btn-fill {
+  position: absolute;
+  inset: 3px;
+  border-radius: var(--r-pill);
+  background: inherit;
+  z-index: 1;
+  pointer-events: none;
+}
+.canva-v2-open-btn-label {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+@keyframes canva-border-spin {
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .canva-v2-open-btn-spin { animation: none; }
+}
+
+.canva-v2-templates-link {
+  display: block;
+  width: 100%;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 600;
+  color: #2563EB;
+  text-decoration: underline;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+/* ==============================
+   Complete Your Profile module
+   ============================== */
+.dash-complete-profile {
+  background: #fff;
+  border: 1px solid #E5E8EE;
+  box-shadow: 0 1px 1px rgba(15,23,42,0.04), 0 1px 0 rgba(15,23,42,0.02);
+  padding: 21px;
+}
+
+.dcp-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--ink);
+  letter-spacing: -0.02em;
+  margin: 0 0 12px;
+}
+
+.dcp-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.dcp-photo-ring {
+  width: 49px;
+  height: 49px;
+  border-radius: 50%;
+  background: #F1F5F9;
+  border: 1.6px dashed #CBD5E1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+.dcp-photo-ring img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+.dcp-copy {
+  font-size: 13.5px;
+  color: var(--muted);
+  line-height: 1.6;
+  flex: 1;
+  min-width: 0;
+}
+.dcp-copy strong { color: var(--ink); font-weight: 700; }
+
+.dcp-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 210px;
+  height: 40px;
+  background: #2563EB;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: var(--r-pill);
+  transition: background .15s;
+}
+.dcp-btn:hover { background: #1D4ED8; }
+.dcp-btn.dcp-btn-done { background: #10B981; cursor: default; }
+.dcp-btn.dcp-btn-done:hover { background: #10B981; }
+
+@media (max-width: 480px) {
+  .dcp-btn { max-width: none; }
+}
+
+/* ==============================
+   Onboarding modal flow — ToS, Update Password, Confirmation,
+   Add Profile Photo
+   ============================== */
+.ob-modal-back {
+  position: fixed; inset: 0;
+  background: rgba(8,24,49,0.45);
+  display: grid; place-items: center;
+  z-index: 600;
+  backdrop-filter: blur(4px);
+  animation: fade .2s ease;
+  padding: 16px;
+}
+
+.ob-modal {
+  background: #fff;
+  border-radius: 14px;
+  width: min(580px, 100%);
+  box-shadow: 0 12px 48px rgba(0,0,0,0.22);
+  overflow: hidden;
+  animation: pop .22s cubic-bezier(.2,.7,.2,1.1);
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100vh - 32px);
+}
+
+.ob-head {
+  padding: 26px 24px;
+  border-bottom: 1px solid #E5E8EE;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+.ob-head h2 { margin: 0; font-size: 22px; font-weight: 700; color: var(--ink); letter-spacing: -0.02em; }
+
+.ob-body {
+  padding: 18px 24px 20px;
+  overflow-y: auto;
+  flex: 1;
+  min-height: 0;
+}
+.ob-body-intro { font-size: 13.5px; color: var(--muted); line-height: 1.6; margin: 0 0 14px; }
+
+.ob-terms-box {
+  background: #F8FAFC;
+  border: 1.5px solid #E5E8EE;
+  border-radius: 10px;
+  padding: 16px 18px;
+  max-height: 220px;
+  overflow-y: auto;
+  margin-bottom: 14px;
+}
+.ob-terms-box h4 { margin: 0 0 6px; font-size: 12.5px; font-weight: 700; color: var(--ink); }
+.ob-terms-box p { margin: 0 0 14px; font-size: 12px; color: #475569; line-height: 1.7; }
+.ob-terms-box p:last-child { margin-bottom: 0; }
+
+.ob-agree-box {
+  background: #F8FAFC;
+  border: 1.5px solid #E5E8EE;
+  border-radius: 10px;
+  padding: 14px;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+.ob-agree-box input[type="checkbox"] {
+  width: 16px; height: 16px; margin-top: 2px; flex-shrink: 0; accent-color: #2563EB; cursor: pointer;
+}
+.ob-agree-box label { font-size: 12.5px; color: #374151; line-height: 1.5; cursor: pointer; }
+.ob-agree-box a { color: #2563EB; text-decoration: none; }
+.ob-agree-box a:hover { text-decoration: underline; }
+
+.ob-field { display: flex; flex-direction: column; gap: 5px; margin-bottom: 14px; }
+.ob-field label {
+  font-size: 11.5px; font-weight: 600; color: var(--muted);
+  letter-spacing: 0.05em; text-transform: uppercase;
+}
+.ob-field input {
+  border: 1px solid #E5E8EE; border-radius: 8px;
+  padding: 9px 11px; font-size: 13.5px; color: var(--ink);
+  outline: none;
+}
+.ob-field input:focus { border-color: #2563EB; box-shadow: 0 0 0 3px rgba(37,99,235,0.12); }
+.ob-field-error input { border-color: #EF4444; }
+.ob-field-error-msg { font-size: 11.5px; color: #DC2626; margin-top: -2px; }
+
+.ob-info-box {
+  background: #FFFBEB;
+  border: 1px solid #FDE68A;
+  border-radius: 10px;
+  padding: 12px 14px;
+  display: flex;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.ob-info-box .ob-info-icon { flex-shrink: 0; color: #D97706; margin-top: 1px; }
+.ob-info-box strong { display: block; font-size: 12px; font-weight: 700; color: #78350F; margin-bottom: 2px; }
+.ob-info-box span { font-size: 12px; color: #92400E; line-height: 1.5; }
+
+.ob-upload-area {
+  background: #FAFAFA;
+  border: 2px dashed #E5E8EE;
+  border-radius: 14px;
+  padding: 28px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 4px;
+  cursor: pointer;
+  transition: background .15s, border-color .15s;
+}
+.ob-upload-area:hover { background: #F1F5F9; border-color: #CBD5E1; }
+.ob-upload-area input[type="file"] { display: none; }
+
+.ob-upload-ring {
+  width: 60px; height: 60px;
+  border-radius: 50%;
+  background: #F1F5F9;
+  border: 3px dashed #CBD5E1;
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+.ob-upload-ring img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.ob-upload-title { font-size: 14px; font-weight: 700; color: #2563EB; margin: 0; }
+.ob-upload-sub { font-size: 12px; color: var(--muted); margin: 4px 0 0; }
+
+.ob-foot {
+  padding: 17px 24px 16px;
+  border-top: 1px solid #E5E8EE;
+  background: #FBFCFD;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+.ob-foot-dots { display: flex; align-items: center; gap: 6px; flex: 1; }
+.ob-dot { width: 8px; height: 8px; border-radius: 4px; background: #CBD5E1; transition: all .15s; }
+.ob-dot.active { width: 22px; background: #2563EB; }
+
+.ob-btn-cancel {
+  height: 38px;
+  padding: 0 17px;
+  border-radius: var(--r-pill);
+  background: #fff;
+  border: 1px solid #E5E8EE;
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 500;
+}
+.ob-btn-cancel:hover { background: var(--canvas); }
+
+.ob-btn-primary {
+  height: 40px;
+  padding: 0 22px;
+  border-radius: var(--r-pill);
+  background: #2563EB;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: background .15s;
+}
+.ob-btn-primary:hover { background: #1D4ED8; }
+.ob-btn-primary:disabled {
+  background: #DBEAFE; color: #93C5FD; cursor: not-allowed;
+  font-weight: 700; letter-spacing: -0.01em;
+}
+.ob-btn-primary.ob-btn-green { background: #10B981; }
+.ob-btn-primary.ob-btn-green:hover { background: #0DA271; }
+
+.ob-confirm-icon {
+  width: 56px; height: 56px; border-radius: 50%;
+  background: #DCFCE7; color: #16A34A;
+  display: flex; align-items: center; justify-content: center;
+  margin: 6px 0 16px;
+}
