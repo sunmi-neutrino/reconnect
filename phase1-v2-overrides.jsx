@@ -271,8 +271,6 @@ const Dashboard = ({ go }) => {
           <h2 className="dash-promo-title">Use in Canva</h2>
           <p className="dash-promo-desc">Your listing data is now connected to Canva.</p>
           <button className="canva-v2-open-btn" onClick={() => window.open("https://www.canva.com/your-apps/AAGE_hOiH5U/reconnect", "_blank")}>
-            <span className="canva-v2-open-btn-spin" aria-hidden="true"></span>
-            <span className="canva-v2-open-btn-fill" aria-hidden="true"></span>
             <span className="canva-v2-open-btn-label">
               <Icon name="external-link" size={20} />
               Open App in Canva

@@ -47,7 +47,7 @@
    Canva module (v2) — "Use in Canva"
    ============================== */
 .dash-promo-canva-v2 {
-  background: linear-gradient(145deg, #C2F9E7 7%, #EBFFEC 54%, #FFFFFF 90%);
+  background: linear-gradient(145deg, #BBE9C1 0%, #FFFFFF 100%);
   border: 1px solid #DADADA;
   box-shadow: none;
   padding: 33px 33px 29px;
@@ -95,32 +95,12 @@
   box-shadow: 0 6px 14px rgba(104,113,238,0.4);
 }
 
-/* Slow, subtle rotating gradient border ring */
-.canva-v2-open-btn-spin {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 400px;
-  height: 400px;
-  background: conic-gradient(
-    from 0deg,
-    #ffffff 0deg,
-    #a3e400 120deg,
-    #00e99c 240deg,
-    #ffffff 360deg
-  );
-  transform: translate(-50%, -50%) rotate(0deg);
-  animation: canva-border-spin 6s linear infinite;
-  z-index: 0;
-  pointer-events: none;
+/* Subtle idle bounce to draw the eye */
+.canva-v2-open-btn {
+  animation: canva-btn-bounce 2.4s ease-in-out infinite;
 }
-.canva-v2-open-btn-fill {
-  position: absolute;
-  inset: 3px;
-  border-radius: var(--r-pill);
-  background: inherit;
-  z-index: 1;
-  pointer-events: none;
+.canva-v2-open-btn:hover {
+  animation-play-state: paused;
 }
 .canva-v2-open-btn-label {
   position: relative;
@@ -130,11 +110,12 @@
   justify-content: center;
   gap: 8px;
 }
-@keyframes canva-border-spin {
-  to { transform: translate(-50%, -50%) rotate(360deg); }
+@keyframes canva-btn-bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
 }
 @media (prefers-reduced-motion: reduce) {
-  .canva-v2-open-btn-spin { animation: none; }
+  .canva-v2-open-btn { animation: none; }
 }
 
 .canva-v2-templates-link {
