@@ -1,5 +1,8 @@
 /* Phase1-V2-only overrides — loaded only by Reconnect Phase1-V2.html */
 
+/* Mobile header logo — clickable back to Dashboard (see inline App script) */
+.topbar-mobile-logo { cursor: pointer; }
+
 /* ==============================
    Dashboard grid — the 5 modules live in two independently-stacking
    flex columns so left/right spacing never depends on the other

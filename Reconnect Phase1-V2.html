@@ -77,6 +77,15 @@ function App() {
     return () => document.removeEventListener("click", handler);
   }, [route, activatedIds]);
 
+  // Mobile header logo → back to Dashboard
+  React.useEffect(() => {
+    const handler = (e) => {
+      if (e.target.closest(".topbar-mobile-logo")) go("dashboard");
+    };
+    document.addEventListener("click", handler);
+    return () => document.removeEventListener("click", handler);
+  }, []);
+
   React.useEffect(() => {
     if (t.primaryColor && t.primaryColor !== '#10B981') {
       document.documentElement.style.setProperty('--green-500', t.primaryColor);
