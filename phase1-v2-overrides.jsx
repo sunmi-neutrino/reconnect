@@ -96,6 +96,13 @@ const WelcomeFlow = ({ onClose }) => {
     <div className="ob-modal-back">
       <div className="ob-modal" onClick={e => e.stopPropagation()}>
 
+        {(step === 1 || step === 2) && (
+          <div className="ob-logo-row">
+            <img src="uploads/ReConnect_logo_final.svg" alt="REConnect" className="ob-logo" />
+            <Dots current={step} />
+          </div>
+        )}
+
         {step === 1 && <>
           <div className="ob-head">
             <h2>Terms and Service</h2>
@@ -121,8 +128,7 @@ const WelcomeFlow = ({ onClose }) => {
               <label htmlFor="ob-agree">I have read and agree to REConnect's <a href="#" onClick={e => e.preventDefault()}>Terms of Service</a> and <a href="#" onClick={e => e.preventDefault()}>Privacy Policy</a>.</label>
             </div>
           </div>
-          <div className="ob-foot">
-            <Dots current={1} />
+          <div className="ob-foot" style={{ justifyContent: "flex-end" }}>
             <button className="ob-btn-cancel" onClick={() => { window.location.href = "https://reconnect-hgar.vercel.app/"; }}>Cancel</button>
             <button className="ob-btn-primary" disabled={!agreed} onClick={() => setStep(2)} style={{ width: 248 }}>
               {agreed ? "Continue" : "Please accept to continue"}
@@ -146,8 +152,7 @@ const WelcomeFlow = ({ onClose }) => {
             </div>
             {pwError && <div className="ob-field-error-msg">{pwError}</div>}
           </div>
-          <div className="ob-foot">
-            <Dots current={2} />
+          <div className="ob-foot" style={{ justifyContent: "flex-end" }}>
             <button className="ob-btn-cancel" onClick={() => setStep(1)}>Back</button>
             <button className="ob-btn-primary" onClick={handleUpdatePassword} style={{ width: 213 }}>Update Your Password</button>
           </div>
