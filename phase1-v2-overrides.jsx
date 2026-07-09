@@ -261,8 +261,7 @@ const Dashboard = ({ go }) => {
         {/* 2 — Use in Canva */}
         <div className="dash-promo-card dash-promo-canva dash-promo-canva-v2 dash-order-3">
           <div className="canva-v2-shot-wrap">
-            <img src="uploads/canva-plugin-screenshot.png?v=3" alt="REConnect Canva plugin interface" className="canva-v2-shot" />
-            <img src="uploads/canva-badge-icon.png" alt="Canva" className="canva-v2-badge" />
+            <img src="uploads/canva-plugin-screenshot.png" alt="REConnect Canva plugin interface" className="canva-v2-shot" />
           </div>
           <h2 className="dash-promo-title">Use in Canva</h2>
           <p className="dash-promo-desc">Your listing data is now connected to Canva.</p>

@@ -44,7 +44,7 @@
    Canva module (v2) — "Use in Canva"
    ============================== */
 .dash-promo-canva-v2 {
-  background: linear-gradient(145deg, #ABEFC3 7%, #ECFDF5 54%, #FDFFFE 90%);
+  background: linear-gradient(145deg, #C2F9E7 7%, #EBFFEC 54%, #FFFFFF 90%);
   border: 1px solid #DADADA;
   box-shadow: none;
   padding: 33px 33px 29px;
@@ -62,21 +62,10 @@
   border-radius: 7px;
 }
 
-.canva-v2-badge {
-  position: absolute;
-  top: -14px;
-  right: -8px;
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-}
-
 /* Smaller, centered screenshot + centered content on mobile */
 @media (max-width: 768px) {
   .dash-promo-canva-v2 { text-align: center; }
   .canva-v2-shot-wrap { max-width: 260px; margin: 0 auto 10px; }
-  .canva-v2-badge { width: 38px; height: 38px; top: -10px; right: -6px; }
   .canva-v2-open-btn {
     width: auto;
     display: inline-flex;
@@ -133,7 +122,7 @@
     #ffffff 360deg
   );
   transform: translate(-50%, -50%) rotate(0deg);
-  animation: canva-border-spin 9s linear infinite;
+  animation: canva-border-spin 6s linear infinite;
   z-index: 0;
   pointer-events: none;
 }
@@ -240,8 +229,9 @@
 .dcp-btn.dcp-btn-done { background: #10B981; cursor: default; }
 .dcp-btn.dcp-btn-done:hover { background: #10B981; }
 
-@media (max-width: 480px) {
-  .dcp-btn { max-width: none; }
+/* Mobile: hug the label and stay left-justified instead of stretching full width */
+@media (max-width: 768px) {
+  .dcp-btn { width: auto; max-width: none; padding: 0 22px; }
 }
 
 /* ==============================
