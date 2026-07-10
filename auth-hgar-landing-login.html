@@ -79,7 +79,7 @@ body {
 }
 
 .cp-headline {
-  font-size: 28px; font-weight: 700; color: #fff;
+  font-size: 36px; font-weight: 700; color: #fff;
   letter-spacing: -0.025em; line-height: 1.25;
   margin-bottom: 10px;
 }
@@ -181,7 +181,6 @@ body {
 /* Login step */
 .auth-headline { font-size: 22px; font-weight: 700; color: #0F172A; letter-spacing: -0.02em; margin-bottom: 6px; line-height: 1.3; }
 .auth-sub { font-size: 13.5px; color: #64748B; line-height: 1.6; margin-bottom: 6px; }
-.login-help { font-size: 13.5px; color: #64748B; line-height: 1.6; margin-bottom: 28px; }
 
 .login-contact { font-size: 12.5px; color: #64748B; text-align: center; margin-top: 18px; line-height: 1.6; }
 .login-contact a { color: #2563EB; font-weight: 600; text-decoration: none; }
@@ -385,7 +384,8 @@ function ContextPanel() {
         <span>REConnect Is Ready for You!</span>
       </div>
       <div className="cp-subline">
-        Your REConnect account is live and ready to use. Log in now to access your listings and marketing tools.
+        Your REConnect account is live and ready to use.<br />
+        Log in now to access your listings and marketing tools.
       </div>
 
       <div className="cp-section-title">What to do once you're in</div>
@@ -457,8 +457,7 @@ function StepLogin({ onNext }) {
     <div className="step active">
       <StepDots current={0} total={3} />
       <div className="auth-headline">Welcome to REConnect</div>
-      <div className="auth-sub">Sign in with your HGAR REConnect credentials to access your account.</div>
-      <div className="login-help">Get your login credentials on the email you received.</div>
+      <div className="auth-sub" style={{ marginBottom:28 }}>Sign in with your HGAR REConnect credentials to access your account. Your login credentials should be on the email you've received.</div>
 
       <form onSubmit={handleSubmit}>
         <div className="field">
