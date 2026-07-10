@@ -1,8 +1,8 @@
 /* global React, Icon, RC_DATA, GetDomainModal */
 /* Phase1-V2-only overrides — loaded only by Reconnect Phase1-V2.html
    Redefines Dashboard (Canva module + Complete Your Profile module) and
-   adds the Add-Profile-Photo modal + the Terms/Password/Confirmation
-   onboarding flow. */
+   adds the Add-Profile-Photo/Update-Password modal + the Terms of
+   Service onboarding flow. */
 
 // Lucide "user" glyph (rounded shoulders) — used for all profile-photo placeholders
 const ProfileIcon = ({ size = 22 }) => (
@@ -11,10 +11,23 @@ const ProfileIcon = ({ size = 22 }) => (
   </svg>
 );
 
-// ── Add Your Profile Photo modal ──────────────────────────────────────────────
+// ── Shared step-progress dots (used by both onboarding modals) ───────────────
+const OnboardingDots = ({ current, total }) => (
+  <div className="ob-foot-dots">
+    {Array.from({ length: total }, (_, i) => (
+      <div key={i} className={`ob-dot ${current === i + 1 ? "active" : ""}`} />
+    ))}
+  </div>
+);
+
+// ── Add Your Profile Photo → Update Your Password modal ──────────────────────
 const AddProfilePhotoModal = ({ onClose, onUploaded }) => {
+  const [step, setStep] = React.useState(1);
   const [file, setFile] = React.useState(null);
   const [preview, setPreview] = React.useState(null);
+  const [newPw, setNewPw] = React.useState("");
+  const [confirmPw, setConfirmPw] = React.useState("");
+  const [pwError, setPwError] = React.useState("");
 
   const handleFile = (f) => {
     if (!f) return;
@@ -24,115 +37,59 @@ const AddProfilePhotoModal = ({ onClose, onUploaded }) => {
     reader.readAsDataURL(f);
   };
 
-  return (
-    <div className="ob-modal-back" onClick={onClose}>
-      <div className="ob-modal" onClick={e => e.stopPropagation()} style={{ maxWidth: 580 }}>
-        <div className="ob-head">
-          <h2>Add Your Profile Photo</h2>
-          <button className="icon-btn" onClick={onClose}><Icon name="x" /></button>
-        </div>
-
-        <div className="ob-body">
-          <p className="ob-body-intro">
-            <strong style={{ color: "var(--ink)", fontWeight: 700 }}>Highly recommended</strong> — your photo appears on your Single Listing Website and all marketing materials.
-          </p>
-
-          <div className="ob-info-box">
-            <span className="ob-info-icon">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="12" cy="12" r="10" />
-                <path d="M12 16v-4M12 8h.01" />
-              </svg>
-            </span>
-            <span>
-              <strong>Make a great first impression.</strong>
-              Listings and marketing materials with an agent photo generate significantly more engagement from buyers and sellers.
-            </span>
-          </div>
-
-          <label className="ob-upload-area">
-            <input type="file" accept="image/png, image/jpeg" onChange={e => handleFile(e.target.files[0])} />
-            <div className="ob-upload-ring">
-              {preview ? <img src={preview} alt="Preview" /> : <ProfileIcon size={28} />}
-            </div>
-            <p className="ob-upload-title">{preview ? "Choose a different photo" : "Click here to upload your photo"}</p>
-            <p className="ob-upload-sub">JPG, PNG — recommended 400×400px or larger</p>
-          </label>
-        </div>
-
-        <div className="ob-foot" style={{ justifyContent: "flex-end" }}>
-          <button className="ob-btn-cancel" onClick={onClose}>Cancel</button>
-          <button className="ob-btn-primary" disabled={!file} onClick={() => onUploaded(preview)}>Upload a Photo</button>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-// ── Onboarding flow: Terms of Service → Update Password → Confirmation ───────
-const WelcomeFlow = ({ onClose }) => {
-  const [step, setStep] = React.useState(1);
-  const [agreed, setAgreed] = React.useState(false);
-  const [newPw, setNewPw] = React.useState("");
-  const [confirmPw, setConfirmPw] = React.useState("");
-  const [pwError, setPwError] = React.useState("");
-
-  const Dots = ({ current }) => (
-    <div className="ob-foot-dots">
-      <div className={`ob-dot ${current === 1 ? "active" : ""}`} />
-      <div className={`ob-dot ${current === 2 ? "active" : ""}`} />
-    </div>
-  );
-
   const handleUpdatePassword = () => {
     if (!newPw || !confirmPw) { setPwError("Please fill in both fields."); return; }
     if (newPw.length < 8) { setPwError("Password must be at least 8 characters."); return; }
     if (newPw !== confirmPw) { setPwError("Passwords do not match."); return; }
     setPwError("");
-    setStep(3);
+    onUploaded(preview);
   };
 
   return (
-    <div className="ob-modal-back">
-      <div className="ob-modal" onClick={e => e.stopPropagation()}>
-
-        {(step === 1 || step === 2) && (
-          <div className="ob-logo-row">
-            <img src="uploads/ReConnect_logo_final.svg" alt="REConnect" className="ob-logo" />
-            <Dots current={step} />
-          </div>
-        )}
+    <div className="ob-modal-back" onClick={onClose}>
+      <div className="ob-modal" onClick={e => e.stopPropagation()} style={{ maxWidth: 580 }}>
+        <div className="ob-logo-row">
+          <img src="uploads/ReConnect_logo_final.svg" alt="REConnect" className="ob-logo" />
+          <OnboardingDots current={step} total={2} />
+        </div>
 
         {step === 1 && <>
           <div className="ob-head">
-            <h2>Terms and Service</h2>
+            <h2>Add Your Profile Photo</h2>
+            <button className="icon-btn" onClick={onClose}><Icon name="x" /></button>
           </div>
+
           <div className="ob-body">
-            <p className="ob-body-intro">Please review and accept our terms to continue. This is a one-time step.</p>
-            <div className="ob-terms-box">
-              <h4>1. Acceptance of Terms</h4>
-              <p>By accessing and using REConnect, you agree to be bound by these Terms of Service and all applicable laws and regulations. If you do not agree with any part of these terms, you may not use REConnect.</p>
-              <h4>2. Use of Service</h4>
-              <p>REConnect is a platform for real estate professionals to manage listings, marketing materials, and collaborate with clients and colleagues. You agree to use the service only for lawful purposes and in accordance with these Terms.</p>
-              <h4>3. Account Responsibility</h4>
-              <p>You are responsible for maintaining the confidentiality of your account credentials and for all activities that occur under your account. You agree to notify REConnect immediately of any unauthorized use.</p>
-              <h4>4. MLS Compliance</h4>
-              <p>You agree to use REConnect in compliance with all applicable MLS rules, regulations, and guidelines. Any data obtained through REConnect must be used in accordance with MLS data sharing agreements.</p>
-              <h4>5. Privacy Policy</h4>
-              <p>Your use of REConnect is also governed by our Privacy Policy, which is incorporated into these Terms by reference. Please review our Privacy Policy to understand our practices.</p>
-              <h4>6. Intellectual Property</h4>
-              <p>All content, features, and functionality on REConnect are owned by Neutrino Inc. and are protected by copyright, trademark, and other intellectual property laws.</p>
+            <p className="ob-body-intro">
+              <strong style={{ color: "var(--ink)", fontWeight: 700 }}>Highly recommended</strong> — your photo appears on your Single Listing Website and all marketing materials.
+            </p>
+
+            <div className="ob-info-box">
+              <span className="ob-info-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="12" cy="12" r="10" />
+                  <path d="M12 16v-4M12 8h.01" />
+                </svg>
+              </span>
+              <span>
+                <strong>Make a great first impression.</strong>
+                Listings and marketing materials with an agent photo generate significantly more engagement from buyers and sellers.
+              </span>
             </div>
-            <div className="ob-agree-box">
-              <input type="checkbox" id="ob-agree" checked={agreed} onChange={e => setAgreed(e.target.checked)} />
-              <label htmlFor="ob-agree">I have read and agree to REConnect's <a href="#" onClick={e => e.preventDefault()}>Terms of Service</a> and <a href="#" onClick={e => e.preventDefault()}>Privacy Policy</a>.</label>
-            </div>
+
+            <label className="ob-upload-area">
+              <input type="file" accept="image/png, image/jpeg" onChange={e => handleFile(e.target.files[0])} />
+              <div className="ob-upload-ring">
+                {preview ? <img src={preview} alt="Preview" /> : <ProfileIcon size={28} />}
+              </div>
+              <p className="ob-upload-title">{preview ? "Choose a different photo" : "Click here to upload your photo"}</p>
+              <p className="ob-upload-sub">JPG, PNG — recommended 400×400px or larger</p>
+            </label>
           </div>
+
           <div className="ob-foot" style={{ justifyContent: "flex-end" }}>
-            <button className="ob-btn-cancel" onClick={() => { window.location.href = "https://reconnect-hgar.vercel.app/"; }}>Cancel</button>
-            <button className="ob-btn-primary" disabled={!agreed} onClick={() => setStep(2)} style={{ width: 248 }}>
-              {agreed ? "Continue" : "Please accept to continue"}
-            </button>
+            <button className="ob-btn-cancel" onClick={onClose}>Cancel</button>
+            <button className="ob-btn-primary" disabled={!file} onClick={() => setStep(2)}>Continue</button>
           </div>
         </>}
 
@@ -141,7 +98,7 @@ const WelcomeFlow = ({ onClose }) => {
             <h2>Update Your Password</h2>
           </div>
           <div className="ob-body">
-            <p className="ob-body-intro">In order to access Canva and the REConnect App Dashboard, it is required to update or set your own password for the account. Please update your password.</p>
+            <p className="ob-body-intro">Now let's update your password to keep your account secure.</p>
             <div className={`ob-field ${pwError ? "ob-field-error" : ""}`}>
               <label>New Password</label>
               <input type="password" value={newPw} onChange={e => setNewPw(e.target.value)} placeholder="Enter a new password" />
@@ -153,27 +110,52 @@ const WelcomeFlow = ({ onClose }) => {
             {pwError && <div className="ob-field-error-msg">{pwError}</div>}
           </div>
           <div className="ob-foot" style={{ justifyContent: "flex-end" }}>
-            <button className="ob-btn-cancel" onClick={() => setStep(1)}>Back</button>
+            <button className="ob-btn-cancel" onClick={onClose}>Cancel</button>
             <button className="ob-btn-primary" onClick={handleUpdatePassword} style={{ width: 213 }}>Update Your Password</button>
           </div>
         </>}
+      </div>
+    </div>
+  );
+};
 
-        {step === 3 && <>
-          <div className="ob-head">
-            <h2>Your Password Updated Successfully!</h2>
-            <button className="icon-btn" onClick={onClose}><Icon name="x" /></button>
-          </div>
-          <div className="ob-body">
-            <p className="ob-body-intro" style={{ margin: 0 }}>
-              Now you are ready to explore REConnect App.<br /><br />
-              Enjoy creating marketing materials for using REConnect Canva App or explore your listing websites and digital marketing!
-            </p>
-          </div>
-          <div className="ob-foot" style={{ justifyContent: "center" }}>
-            <button className="ob-btn-primary" onClick={onClose}>Explore REConnect</button>
-          </div>
-        </>}
+// ── Onboarding flow: Terms of Service ─────────────────────────────────────────
+const WelcomeFlow = ({ onClose }) => {
+  const [agreed, setAgreed] = React.useState(false);
 
+  return (
+    <div className="ob-modal-back">
+      <div className="ob-modal" onClick={e => e.stopPropagation()}>
+        <div className="ob-head">
+          <h2>Terms and Service</h2>
+        </div>
+        <div className="ob-body">
+          <p className="ob-body-intro">Please review and accept our terms to continue. This is a one-time step.</p>
+          <div className="ob-terms-box">
+            <h4>1. Acceptance of Terms</h4>
+            <p>By accessing and using REConnect, you agree to be bound by these Terms of Service and all applicable laws and regulations. If you do not agree with any part of these terms, you may not use REConnect.</p>
+            <h4>2. Use of Service</h4>
+            <p>REConnect is a platform for real estate professionals to manage listings, marketing materials, and collaborate with clients and colleagues. You agree to use the service only for lawful purposes and in accordance with these Terms.</p>
+            <h4>3. Account Responsibility</h4>
+            <p>You are responsible for maintaining the confidentiality of your account credentials and for all activities that occur under your account. You agree to notify REConnect immediately of any unauthorized use.</p>
+            <h4>4. MLS Compliance</h4>
+            <p>You agree to use REConnect in compliance with all applicable MLS rules, regulations, and guidelines. Any data obtained through REConnect must be used in accordance with MLS data sharing agreements.</p>
+            <h4>5. Privacy Policy</h4>
+            <p>Your use of REConnect is also governed by our Privacy Policy, which is incorporated into these Terms by reference. Please review our Privacy Policy to understand our practices.</p>
+            <h4>6. Intellectual Property</h4>
+            <p>All content, features, and functionality on REConnect are owned by Neutrino Inc. and are protected by copyright, trademark, and other intellectual property laws.</p>
+          </div>
+          <div className="ob-agree-box">
+            <input type="checkbox" id="ob-agree" checked={agreed} onChange={e => setAgreed(e.target.checked)} />
+            <label htmlFor="ob-agree">I have read and agree to REConnect's <a href="#" onClick={e => e.preventDefault()}>Terms of Service</a> and <a href="#" onClick={e => e.preventDefault()}>Privacy Policy</a>.</label>
+          </div>
+        </div>
+        <div className="ob-foot" style={{ justifyContent: "flex-end" }}>
+          <button className="ob-btn-cancel" onClick={() => { window.location.href = "https://reconnect-hgar.vercel.app/"; }}>Cancel</button>
+          <button className="ob-btn-primary" disabled={!agreed} onClick={onClose} style={{ width: 248 }}>
+            {agreed ? "Continue" : "Please accept to continue"}
+          </button>
+        </div>
       </div>
     </div>
   );
@@ -287,14 +269,14 @@ const Dashboard = ({ go }) => {
               {profilePhoto ? <img src={profilePhoto} alt="Your profile" /> : <ProfileIcon size={22} />}
             </div>
             <p className="dcp-copy">
-              <strong>Highly recommended</strong> — your photo will appears on the website and all marketing materials.
+              <strong>Highly recommended</strong> — Update your photo to show on your website and all marketing materials.
             </p>
           </div>
           <button
             className={`dcp-btn ${profilePhoto ? "dcp-btn-done" : ""}`}
             onClick={() => !profilePhoto && setShowPhotoModal(true)}
           >
-            {profilePhoto ? <><Icon name="check" size={16} stroke={3} /> Photo Added</> : "Add My Profile Photo"}
+            {profilePhoto ? <><Icon name="check" size={16} stroke={3} /> Photo Added</> : "Update My Profile"}
           </button>
         </div>
 

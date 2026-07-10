@@ -102,8 +102,23 @@ function App() {
     return () => document.removeEventListener("click", onClick);
   }, []);
 
-  const go = (r) => { setRoute(r); window.scrollTo(0, 0); };
+  const go = (r) => {
+    setRoute(r);
+    window.scrollTo(0, 0);
+    const url = new URL(window.location.href);
+    url.searchParams.set("page", r);
+    window.history.pushState({ page: r }, "", url);
+  };
   const onShare = (kind) => setShareKind(kind);
+
+  // Keep route in sync with browser back/forward
+  React.useEffect(() => {
+    const onPopState = () => {
+      setRoute(new URLSearchParams(window.location.search).get("page") || "dashboard");
+    };
+    window.addEventListener("popstate", onPopState);
+    return () => window.removeEventListener("popstate", onPopState);
+  }, []);
 
   let crumbs = [{ label: "REConnect", route: "dashboard" }];
   if (route === "dashboard")                crumbs.push({ label: "Dashboard", route: null });

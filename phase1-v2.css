@@ -75,8 +75,8 @@
   justify-content: center;
   gap: 8px;
   width: 100%;
-  border: none;
-  overflow: hidden;
+  border: 2px solid #fff;
+  overflow: visible;
   background: #10B981;
   color: #fff;
   font-size: 16px;
@@ -84,23 +84,23 @@
   letter-spacing: 0.2px;
   padding: 13px 16px;
   border-radius: var(--r-pill);
-  box-shadow: 0 4px 8px rgba(104,113,238,0.32);
-  transition: background .15s, transform .15s ease, box-shadow .15s ease;
+  box-shadow: 0 4px 8px rgba(104,113,238,0.32), 0 0 16px 4px rgba(250,204,21,0.55);
+  transition: background .15s, transform .15s ease;
   margin-bottom: 10px;
   cursor: pointer;
 }
 .canva-v2-open-btn:hover {
   background: #0DA271;
   transform: scale(1.045);
-  box-shadow: 0 6px 14px rgba(104,113,238,0.4);
 }
 
-/* Subtle idle bounce to draw the eye */
+/* Subtle idle bounce + soft pulsing yellow glow to draw the eye */
 .canva-v2-open-btn {
-  animation: canva-btn-bounce 2.4s ease-in-out infinite;
+  animation: canva-btn-bounce 2.4s ease-in-out infinite, canva-btn-glow-pulse 1.8s ease-in-out infinite;
 }
 .canva-v2-open-btn:hover {
   animation-play-state: paused;
+  box-shadow: 0 6px 14px rgba(104,113,238,0.4), 0 0 22px 6px rgba(250,204,21,0.7);
 }
 .canva-v2-open-btn-label {
   position: relative;
@@ -113,6 +113,10 @@
 @keyframes canva-btn-bounce {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-4px); }
+}
+@keyframes canva-btn-glow-pulse {
+  0%, 100% { box-shadow: 0 4px 8px rgba(104,113,238,0.32), 0 0 16px 4px rgba(250,204,21,0.45); }
+  50% { box-shadow: 0 4px 8px rgba(104,113,238,0.32), 0 0 26px 9px rgba(250,204,21,0.8); }
 }
 @media (prefers-reduced-motion: reduce) {
   .canva-v2-open-btn { animation: none; }
