@@ -11,7 +11,15 @@ const ProfileIcon = ({ size = 22 }) => (
   </svg>
 );
 
-// ── Shared step-progress dots (used by both onboarding modals) ───────────────
+// Lucide "lock" glyph — used for the Update Temporary Password checklist badge
+const PasswordIcon = ({ size = 22 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <rect x="4" y="11" width="16" height="10" rx="2.4" />
+    <path d="M7.5 11V7.5a4.5 4.5 0 0 1 9 0V11" />
+  </svg>
+);
+
+// ── Shared step-progress dots (used by the Terms of Service onboarding modal) ─
 const OnboardingDots = ({ current, total }) => (
   <div className="ob-foot-dots">
     {Array.from({ length: total }, (_, i) => (
@@ -20,9 +28,10 @@ const OnboardingDots = ({ current, total }) => (
   </div>
 );
 
-// ── Add Your Profile Photo → Update Your Password modal ──────────────────────
-const AddProfilePhotoModal = ({ onClose, onUploaded }) => {
-  const [step, setStep] = React.useState(1);
+// ── Add Your Profile Photo / Update Your Password modal ──────────────────────
+// Each mode is a standalone single-step task so the two "Complete Your
+// Profile" checklist items can be completed independently, in any order.
+const AddProfilePhotoModal = ({ mode = "photo", onClose, onComplete }) => {
   const [file, setFile] = React.useState(null);
   const [preview, setPreview] = React.useState(null);
   const [newPw, setNewPw] = React.useState("");
@@ -42,7 +51,7 @@ const AddProfilePhotoModal = ({ onClose, onUploaded }) => {
     if (newPw.length < 8) { setPwError("Password must be at least 8 characters."); return; }
     if (newPw !== confirmPw) { setPwError("Passwords do not match."); return; }
     setPwError("");
-    onUploaded(preview);
+    onComplete();
   };
 
   return (
@@ -50,10 +59,9 @@ const AddProfilePhotoModal = ({ onClose, onUploaded }) => {
       <div className="ob-modal" onClick={e => e.stopPropagation()} style={{ maxWidth: 580 }}>
         <div className="ob-logo-row">
           <img src="uploads/ReConnect_logo_final.svg" alt="REConnect" className="ob-logo" />
-          <OnboardingDots current={step} total={2} />
         </div>
 
-        {step === 1 && <>
+        {mode === "photo" && <>
           <div className="ob-head">
             <h2>Add Your Profile Photo</h2>
             <button className="icon-btn" onClick={onClose}><Icon name="x" /></button>
@@ -89,16 +97,17 @@ const AddProfilePhotoModal = ({ onClose, onUploaded }) => {
 
           <div className="ob-foot" style={{ justifyContent: "flex-end" }}>
             <button className="ob-btn-cancel" onClick={onClose}>Cancel</button>
-            <button className="ob-btn-primary" disabled={!file} onClick={() => setStep(2)}>Continue</button>
+            <button className="ob-btn-primary" disabled={!file} onClick={() => onComplete(preview)}>Save Photo</button>
           </div>
         </>}
 
-        {step === 2 && <>
+        {mode === "password" && <>
           <div className="ob-head">
             <h2>Update Your Password</h2>
+            <button className="icon-btn" onClick={onClose}><Icon name="x" /></button>
           </div>
           <div className="ob-body">
-            <p className="ob-body-intro">Now let's update your password to keep your account secure.</p>
+            <p className="ob-body-intro">Update your temporary password to keep your account secure.</p>
             <div className={`ob-field ${pwError ? "ob-field-error" : ""}`}>
               <label>New Password</label>
               <input type="password" value={newPw} onChange={e => setNewPw(e.target.value)} placeholder="Enter a new password" />
@@ -167,8 +176,16 @@ const Dashboard = ({ go }) => {
   const firstListing = myListings[0];
   const sitesReady = myListings.length;
   const [domainModalListing, setDomainModalListing] = React.useState(null);
-  const [showPhotoModal, setShowPhotoModal] = React.useState(false);
+  const [profileModalMode, setProfileModalMode] = React.useState(null); // null | "photo" | "password"
   const [profilePhoto, setProfilePhoto] = React.useState(null);
+  const [passwordUpdated, setPasswordUpdated] = React.useState(false);
+  // "Just completed" flags keep a finished item on screen just long enough to
+  // show its checkmark before it animates out and is removed from the list.
+  const [photoJustDone, setPhotoJustDone] = React.useState(false);
+  const [passwordJustDone, setPasswordJustDone] = React.useState(false);
+  const showPhotoTask = !profilePhoto || photoJustDone;
+  const showPasswordTask = !passwordUpdated || passwordJustDone;
+  const profileComplete = !showPhotoTask && !showPasswordTask;
 
   return (
     <>
@@ -252,8 +269,8 @@ const Dashboard = ({ go }) => {
           </div>
           <h2 className="dash-promo-title">Use in Canva</h2>
           <p className="dash-promo-desc">
-            Your listing data is now connected to Canva.<br />
-            Download, drag and drop your data and create! — <a href="#" className="link" onClick={e => e.preventDefault()}>Watch Tutorial</a>
+            Your listing data is now connected to Canva. Download, drag and drop your data and create!<br />
+            <a href="#" className="link" onClick={e => e.preventDefault()}>Watch Tutorial</a>
           </p>
           <button className="canva-v2-open-btn" onClick={() => window.open("https://www.canva.com/your-apps/AAGE_hOiH5U/reconnect", "_blank")}>
             <span className="canva-v2-open-btn-label">
@@ -267,20 +284,43 @@ const Dashboard = ({ go }) => {
         {/* 4 — Complete Your Profile */}
         <div className="card dash-complete-profile dash-order-cp">
           <h2 className="dcp-title">Complete Your Profile</h2>
-          <div className="dcp-row">
-            <div className="dcp-photo-ring">
-              {profilePhoto ? <img src={profilePhoto} alt="Your profile" /> : <ProfileIcon size={22} />}
+          {profileComplete ? (
+            <div className="dcp-complete-state">
+              <span className="dcp-complete-icon"><Icon name="check" size={16} stroke={3} /></span>
+              <p>Nice work — your profile is all set!</p>
             </div>
-            <p className="dcp-copy">
-              <strong>Highly recommended</strong> — Update your photo to show on your website and all marketing materials.
-            </p>
-          </div>
-          <button
-            className={`dcp-btn ${profilePhoto ? "dcp-btn-done" : ""}`}
-            onClick={() => !profilePhoto && setShowPhotoModal(true)}
-          >
-            {profilePhoto ? <><Icon name="check" size={16} stroke={3} /> Photo Added</> : "Update My Profile"}
-          </button>
+          ) : (
+            <div className="dcp-checklist">
+              {showPhotoTask && (
+                <div className={`dcp-check-item ${photoJustDone ? "is-done" : ""}`}>
+                  <span className="dcp-task-icon">
+                    {photoJustDone ? <Icon name="check" size={15} stroke={3} /> : <ProfileIcon size={17} />}
+                  </span>
+                  <div className="dcp-check-text">
+                    <span className="dcp-check-label">Add your Profile Photo</span>
+                    <p className="dcp-check-desc">For your website and marketing.</p>
+                  </div>
+                  {!photoJustDone && (
+                    <button className="dcp-cta-btn" onClick={() => setProfileModalMode("photo")}>Add Photo</button>
+                  )}
+                </div>
+              )}
+              {showPasswordTask && (
+                <div className={`dcp-check-item ${passwordJustDone ? "is-done" : ""}`}>
+                  <span className="dcp-task-icon">
+                    {passwordJustDone ? <Icon name="check" size={15} stroke={3} /> : <PasswordIcon size={16} />}
+                  </span>
+                  <div className="dcp-check-text">
+                    <span className="dcp-check-label">Update Temporary Password</span>
+                    <p className="dcp-check-desc">Keep your account secure.</p>
+                  </div>
+                  {!passwordJustDone && (
+                    <button className="dcp-cta-btn" onClick={() => setProfileModalMode("password")}>Update Password</button>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
         </div>
 
         {/* 5 — Your Stats */}
@@ -318,10 +358,23 @@ const Dashboard = ({ go }) => {
         <GetDomainModal listing={domainModalListing} onClose={() => setDomainModalListing(null)} />
       )}
 
-      {showPhotoModal && (
+      {profileModalMode && (
         <AddProfilePhotoModal
-          onClose={() => setShowPhotoModal(false)}
-          onUploaded={(dataUrl) => { setProfilePhoto(dataUrl); setShowPhotoModal(false); }}
+          mode={profileModalMode}
+          onClose={() => setProfileModalMode(null)}
+          onComplete={(dataUrl) => {
+            if (profileModalMode === "photo") {
+              setProfilePhoto(dataUrl);
+              setPhotoJustDone(true);
+              setTimeout(() => setPhotoJustDone(false), 900);
+            }
+            if (profileModalMode === "password") {
+              setPasswordUpdated(true);
+              setPasswordJustDone(true);
+              setTimeout(() => setPasswordJustDone(false), 900);
+            }
+            setProfileModalMode(null);
+          }}
         />
       )}
     </>
